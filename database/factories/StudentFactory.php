@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Student;
+use App\Models\Batch;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudentFactory extends Factory
 {
-    protected $model = Student::class;
-
-    public function definition()
+    public function definition(): array
     {
         return [
-            // students table currently has only id and timestamps;
-            // factory will just create records with timestamps
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'batch_id' => Batch::factory(),
         ];
     }
 }

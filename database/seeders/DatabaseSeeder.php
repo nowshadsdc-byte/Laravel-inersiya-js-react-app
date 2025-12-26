@@ -15,61 +15,40 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // User::factory(10)->create();
+   public function run(): void
+{
+    User::factory(10)->create();
 
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => 'password',
-                'email_verified_at' => now(),
-            ]
-        );
+    User::firstOrCreate(
+        ['email' => 'test@example.com'],
+        [
+            'name' => 'Test User',
+            'password' => 'password',
+            'email_verified_at' => now(),
+        ]
+    );
 
-        // Toggle foreign key checks while we seed circular FK columns (driver-specific)
-        $driver = DB::getDriverName();
+    // Create courses with batches and students
+    Course::factory()
+        ->count(10)
+        ->create()
+        ->each(function ($course) {
 
-        if ($driver === 'mysql') {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        } elseif ($driver === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = OFF;');
-        } elseif ($driver === 'pgsql') {
-            DB::statement('SET CONSTRAINTS ALL DEFERRED;');
-        }
+            // each course has 2 batches
+            Batch::factory()
+                ->count(2)
+                ->create([
+                    'course_id' => $course->id,
+                ])
+                ->each(function ($batch) {
 
-        Course::factory()->count(10)->create();
-        Batch::factory()->count(10)->create();
-        Student::factory()->count(20)->create();
-
-        $courses = Course::all();
-        $batches = Batch::all();
-        $students = Student::all();
-
-        $count = min($courses->count(), $batches->count());
-
-        for ($i = 0; $i < $count; $i++) {
-            $course = $courses[$i];
-            $batch = $batches[$i];
-
-            $course->batch_id = $batch->id;
-            // assign a student to the course (round-robin)
-            if ($students->count() > 0) {
-                $course->student_id = $students[$i % $students->count()]->id;
-            }
-            $course->save();
-
-            $batch->course_id = $course->id;
-            $batch->save();
-        }
-
-        if ($driver === 'mysql') {
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        } elseif ($driver === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = ON;');
-        } elseif ($driver === 'pgsql') {
-            DB::statement('SET CONSTRAINTS ALL IMMEDIATE;');
-        }
-    }
+                    // each batch has 5 students
+                    Student::factory()
+                        ->count(5)
+                        ->create([
+                            'batch_id' => $batch->id,
+                        ]);
+                });
+        });
+}
 }
