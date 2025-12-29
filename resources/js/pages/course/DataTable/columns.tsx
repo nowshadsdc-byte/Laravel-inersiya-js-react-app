@@ -1,12 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { Course } from "@/types/Course"
+import { CourseDailog } from "@/components/course-dailog"
+import { courseEditConfig } from "@/config/courseConfig/course-edit-config"
 
 export const columns: ColumnDef<Course>[] = [
   {
-    id: "id",
     accessorKey: "id",
     header: "ID",
   },
@@ -18,37 +19,20 @@ export const columns: ColumnDef<Course>[] = [
     accessorKey: "description",
     header: "Description",
   },
-    {
-    accessorKey: "standard_count",
-    header: "Standard Count",
-  },
-  {
-    accessorKey: "batch_count",
-    header: "Batch Count",
-  },
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const batch = row.original
+      const course = row.original
       return (
         <div className="flex gap-2">
-          {/* Edit */}
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => router.get(`/course/${batch.id}/edit`)}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-
-          {/* Delete */}
+          <CourseDailog id={course.id} coursesdata={course} ButtonLabel={courseEditConfig.ButtonLabel} title={courseEditConfig.title}  description={courseEditConfig.description}/>
           <Button
             size="icon"
             variant="destructive"
             onClick={() => {
-              if (confirm("Are you sure you want to delete this batch?")) {
-                router.delete(`/batch/${batch.id}`)
+              if (confirm("Are you sure you want to delete this course?")) {
+                router.delete(`/courses/${course.id}`)
               }
             }}
           >

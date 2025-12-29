@@ -36,6 +36,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/courses/create',[CourseController::class,'create'])->name('courses.create');
     Route::post('/courses/create',[CourseController::class,'store'])->name('courses.store');
+    Route::get('/courses/{id}/edit',[CourseController::class,'edit'])->name('courses.edit');
+    Route::put('/courses/edit/{id}',[CourseController::class,'update'])->name('courses.update');
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+    
 
     Route::get('/students/create',[StudentController::class,'create'])->name('student.create');
     Route::post('/students/create',[StudentController::class,'store'])->name('student.store');

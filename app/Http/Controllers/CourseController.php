@@ -14,7 +14,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::latest()->get();
         return Inertia::render('course/index', compact('courses'));
     }
 
@@ -23,7 +23,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('course/create');
     }
 
     /**
@@ -31,7 +31,14 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        Course::create($validated);
+
+        return redirect()->route('courses.index')->with('success', 'Course created successfully.'); 
     }
 
     /**
@@ -45,9 +52,9 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course)
+    public function edit(Course $id)
     {
-        //
+        dd($id);
     }
 
     /**
@@ -61,8 +68,9 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course $course)
+    public function destroy(Course $id)
     {
-        //
+        $id->delete();
+        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
 }
