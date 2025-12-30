@@ -26,7 +26,9 @@ export const columns: ColumnDef<Course>[] = [
       const course = row.original
       return (
         <div className="flex gap-2">
-          <CourseDailog id={course.id} coursesdata={course} ButtonLabel={courseEditConfig.ButtonLabel} title={courseEditConfig.title}  description={courseEditConfig.description}/>
+
+          <CourseDailog coursesdata={course} ButtonLabel={courseEditConfig.ButtonLabel} title={courseEditConfig.title}  description={courseEditConfig.description}/>
+
           <Button
             size="icon"
             variant="destructive"

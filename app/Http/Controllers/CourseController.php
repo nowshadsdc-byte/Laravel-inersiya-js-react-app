@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 
+use function Termwind\render;
+
 class CourseController extends Controller
 {
     /**
@@ -60,9 +62,16 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, Course $id)
     {
-        //
+      $validated = $request->validate([
+        'name' => ['required','string','max:255'],
+        'description' => ['nullable', 'string'],
+      ]);
+
+      $course = Course::findOrFail($id->id);
+      $course->update($validated);
+      return redirect()->back()->with('success','course updated successfully');
     }
 
     /**

@@ -10,56 +10,82 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label  } from "@/components/ui/label"
+import { Label } from "@/components/ui/label"
 import { Course } from "@/types/Course"
+import { useForm } from "@inertiajs/react"
+import { useEffect } from "react"
 
 type CourseDialogProps = {
-  id: number | string,
-  ButtonLabel: string ,
-  title: string,
-  description: string,
-  coursesdata:Course
+  ButtonLabel: string
+  title: string
+  description: string
+  coursesdata: Course
 }
- 
 
-export function CourseDailog({ id , coursesdata, ButtonLabel ,title , description}: CourseDialogProps) {
-  function sumit(){
-  
+export function CourseDailog({
+  coursesdata,
+  ButtonLabel,
+  title,
+  description,
+}: CourseDialogProps) {
+
+  const { data, setData, put, processing } = useForm({
+    name: "",
+    description: "",
+  })
+
+  useEffect(() => {
+    setData({
+      name: coursesdata.name ?? "",
+      description: coursesdata.description ?? "",
+    })
+  }, [coursesdata])
+
+  function update(e: React.FormEvent) {
+    e.preventDefault()
+    put(`/courses/edit/${coursesdata.id}`)
   }
+
   return (
     <Dialog>
-      <form onSubmit={sumit}>
-        <DialogTrigger asChild>
-          <Button variant="outline">{ButtonLabel} </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>
+        <Button variant="outline">{ButtonLabel}</Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={update}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>
-              {description} 
-            </DialogDescription>
+            <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4">
-                <Label>Name</Label>
-                <Input type="text" name="name" value={coursesdata.name} ></Input>
-          </div>
-          <div className="grid gap-4">
-                <Label>Description </Label>
-                <Input className="" value={coursesdata.id}></Input>
+
+          <div className="grid gap-4 mt-4">
+            <Label>Name</Label>
+            <Input
+              value={data.name}
+              onChange={(e) => setData("name", e.target.value)}
+            />
           </div>
 
-          <div className="grid gap-4">
-                <Label>Description </Label>
-                <Input className="" ></Input>
+          <div className="grid gap-4 mt-4">
+            <Label>Course Description</Label>
+            <Input
+              value={data.description}
+              onChange={(e) => setData("description", e.target.value)}
+            />
           </div>
-          <DialogFooter>
+
+          <DialogFooter className="mt-6">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+
+            <Button type="submit" disabled={processing}>
+              {processing ? "Updating..." : "Update Course"}
+            </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   )
 }
