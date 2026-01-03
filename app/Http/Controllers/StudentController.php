@@ -19,9 +19,17 @@ class StudentController extends Controller
         $students = Student::with(['batch', 'batch.course', 'courses'])->latest()->get();
         return Inertia('student/index', compact('students'));
     }
+    // Singel Student Profile info 
+    public function studentDetails(Student $id) {
+        
+
+        $studentData = Student::with(['batch','courses'])->findOrFail($id->id);
+
+        return Inertia::render('student/studentProfile',$studentData);
+    }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource
      */
     public function create()
     {
@@ -38,8 +46,6 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // dd request to check
-        // dd($request->all());
 
         $validated = $request->validate([
             'name'       => 'required|string|max:255',

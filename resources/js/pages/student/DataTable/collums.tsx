@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
+import { Pencil, Trash2 ,Eye} from "lucide-react"
 import { Student } from "@/types/Students"
 
 export const columns: ColumnDef<Student>[] = [
@@ -53,6 +53,14 @@ export const columns: ColumnDef<Student>[] = [
 
             return (
                 <div className="flex gap-2">
+                    {/* Student Profile */}
+                    <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={() => router.get(`/student/profile/${student.id}`)}
+                    >
+                        <Eye className="h-4 w-4" />
+                    </Button>
                     {/* Edit */}
                     <Button
                         size="icon"

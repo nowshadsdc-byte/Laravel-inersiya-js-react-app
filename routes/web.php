@@ -46,6 +46,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('student.edit');
     Route::put('/students/edit/{id}',[StudentController::class,'update'])->name('student.update');
     Route::delete('/student/{id}',[StudentController::class,'destroy'])->name('student.delete');
+
+    //Student Profile View Route 
+    Route::get('/student/profile/{id}',[StudentController::class,'studentDetails'])->name('student.profile');
 });
 
 require __DIR__ . '/settings.php';
