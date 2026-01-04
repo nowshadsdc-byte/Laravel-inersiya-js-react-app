@@ -14,7 +14,18 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('father_name');
+            $table->string('mother_name');
+            $table->string('student_uid')->unique()->nullable();
+            $table->string('phone')->nullable();
+            $table->string('status')->default('active');
             $table->string('email')->unique();
+            $table->string('photo')->nullable();
+            $table->text('address')->nullable();
+            $table->string('guardian_name')->nullable();
+            $table->string('guardian_phone')->nullable();
+            $table->string('guardian_relation')->nullable();
+
             $table->foreignId('batch_id')
                 ->constrained('batches')
                 ->onDelete('cascade');

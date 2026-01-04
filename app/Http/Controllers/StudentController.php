@@ -20,14 +20,11 @@ class StudentController extends Controller
         return Inertia('student/index', compact('students'));
     }
     // Singel Student Profile info 
-    public function studentDetails(Student $id) {
-        
+    public function studentDetails(Student $id)
+    {
 
-        $studentData = Student::with(['batch','courses'])->findOrFail($id->id);
-
-        
-
-        return Inertia::render('student/studentProfile',[
+        $studentData = Student::with(['batch', 'courses'])->findOrFail($id->id);
+        return Inertia::render('student/studentProfile', [
             'studentData' => $studentData,
         ]);
     }
@@ -50,29 +47,77 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-
+        // Validate all inputs
         $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|unique:students,email',
-            'batch_id'   => 'required|exists:batches,id',
-            'course_ids' => 'required|array',        // <-- match frontend
-            'course_ids.*' => 'exists:courses,id',  // <-- each course must exist
+            'name' => 'required|string|max:255',
+            'father_name' => 'required|string|max:255',
+            'mother_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'guardian_name' => 'nullable|string|max:255',
+            'guardian_phone' => 'nullable|string|max:20',
+            'guardian_relation' => 'nullable|string|max:100',
+            'status' => 'required|string|in:active,inactive',
+            'batch_id' => 'required|exists:batches,id',
+            'course_ids' => 'required|array',
+            'course_ids.*' => 'exists:courses,id',
+            'photo' => 'nullable|image|max:2048', // 2MB
         ]);
 
-        // create student (batch_id → one to many)
+        // Handle photo upload
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('students', 'public');
+        }
+
+        // Create student
         $student = Student::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
+            'name' => $validated['name'],
+            'father_name' => $validated['father_name'],
+            'mother_name' => $validated['mother_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'guardian_name' => $validated['guardian_name'] ?? null,
+            'guardian_phone' => $validated['guardian_phone'] ?? null,
+            'guardian_relation' => $validated['guardian_relation'] ?? null,
+            'status' => $validated['status'],
             'batch_id' => $validated['batch_id'],
+            'photo' => $photoPath,
         ]);
 
-        // attach courses (many to many)
+        // Attach courses
         $student->courses()->attach($validated['course_ids']);
+
+        // 5. Generate Student UID
+        $batch = $student->batch;
+        $firstCourse = $student->courses()->first(); // take first course
+        $courseCode = $firstCourse->code ?? 'XXX';
+
+        // YYMM from batch start date
+        $yymm = "2025";
+
+        // SERIAL4: running serial for this batch
+        $serialCount = Student::where('batch_id', $batch->id)->count();
+        $serialNumber = str_pad($serialCount, 4, '0', STR_PAD_LEFT); // e.g., 0001, 0002
+
+        // First letter of student name
+        $firstLetter = strtoupper(substr($student->name, 0, 1));
+
+        // Final UID
+        $studentUid = "SDC-{$courseCode}-{$yymm}-{$serialNumber}-{$firstLetter}";
+
+        // Save UID
+        $student->student_uid = $studentUid;
+        $student->save();
+
 
         return redirect()
             ->route('student.index')
             ->with('success', 'Student created successfully');
     }
+
 
     /**
      * Display the specified resource.

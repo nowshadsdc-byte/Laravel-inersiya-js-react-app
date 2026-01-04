@@ -35,6 +35,7 @@ class BatchController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'batch_code'=>'required', 
             'course_id' => 'required|exists:courses,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',

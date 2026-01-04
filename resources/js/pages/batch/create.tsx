@@ -14,6 +14,7 @@ export default function Create({ courses }: { courses: { id: number; name: strin
     const { data, setData, post, processing, errors } = useForm<BatchFormData>({
         name: "",
         course_id: 0,
+        batch_code:2024,
         start_date: "",
         end_date: "",
         TotalClass: 60,
@@ -53,6 +54,14 @@ export default function Create({ courses }: { courses: { id: number; name: strin
                             <Input type='date'
                                 value={data.end_date}
                                 onChange={(e) => setData("end_date", e.target.value)}
+                            />
+                            {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
+                        </div>
+                        <div className="my-4">
+                            <Label>batch_code</Label>
+                            <Input type='number'
+                                value={data.batch_code}
+                                onChange={(e) => setData("batch_code",Number(e.target.value))}
                             />
                             {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
                         </div>

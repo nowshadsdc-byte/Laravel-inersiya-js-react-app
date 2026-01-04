@@ -16,8 +16,8 @@ export const columns: ColumnDef<Batch>[] = [
     header: "Batch Name",
   },
   {
-    accessorKey: "course_id",
-    header: "Course ID",
+    accessorKey: "batch_code",
+    header: "Batch Code",
   },
   {
     accessorKey: "course.name",

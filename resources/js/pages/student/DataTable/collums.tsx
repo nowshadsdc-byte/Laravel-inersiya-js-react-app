@@ -16,7 +16,11 @@ export const columns: ColumnDef<Student>[] = [
     {
         accessorKey: "email",
         header: "Email",
-    },
+    },{
+        accessorKey:"student_uid",
+        header:"student_uid"
+    }
+    ,
     {
         accessorKey: "batch_id",
         header: "Batch Name",

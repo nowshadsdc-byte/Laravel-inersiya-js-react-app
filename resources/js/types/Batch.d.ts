@@ -18,6 +18,7 @@ export interface Course {
 export interface BatchFormData {
   name: string
   course_id: number | ""
+  batch_code:number
   start_date: string
   end_date: string
   TotalClass: number | 30
