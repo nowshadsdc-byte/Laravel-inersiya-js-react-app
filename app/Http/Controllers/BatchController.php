@@ -63,6 +63,7 @@ class BatchController extends Controller
             'id' => $data->id,
             'name' => $data->name,
             'course_id' => $data->course_id,
+            'batch_code'=>$data->batch_code,
             'start_date' => $data->start_date,
             'end_date' => $data->end_date,
             'TotalClass' => $data->TotalClass,
@@ -83,6 +84,7 @@ class BatchController extends Controller
             'name' => 'required|string|max:255',
             'course_id' => 'required|exists:courses,id',
             'start_date' => 'required|date',
+            'batch_code'=> 'required | string',
             'end_date' => 'required|date|after_or_equal:start_date',
             'TotalClass' => 'required|integer|min:1',
         ]);

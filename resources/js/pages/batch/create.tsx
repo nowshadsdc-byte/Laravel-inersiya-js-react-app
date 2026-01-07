@@ -14,10 +14,10 @@ export default function Create({ courses }: { courses: { id: number; name: strin
     const { data, setData, post, processing, errors } = useForm<BatchFormData>({
         name: "",
         course_id: 0,
-        batch_code:2024,
+        batch_code:" ",
         start_date: "",
         end_date: "",
-        TotalClass: 60,
+        TotalClass: 0,
 
     })
     const breadcrumbs: BreadcrumbItem[] = [
@@ -59,9 +59,9 @@ export default function Create({ courses }: { courses: { id: number; name: strin
                         </div>
                         <div className="my-4">
                             <Label>batch_code</Label>
-                            <Input type='number'
+                            <Input type='text'
                                 value={data.batch_code}
-                                onChange={(e) => setData("batch_code",Number(e.target.value))}
+                                onChange={(e) => setData("batch_code",e.target.value)}
                             />
                             {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
                         </div>

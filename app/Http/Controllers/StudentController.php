@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Batch;
 use App\Models\Student;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class StudentController extends Controller
 {
@@ -47,75 +50,92 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate all inputs
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'guardian_name' => 'nullable|string|max:255',
-            'guardian_phone' => 'nullable|string|max:20',
-            'guardian_relation' => 'nullable|string|max:100',
-            'status' => 'required|string|in:active,inactive',
-            'batch_id' => 'required|exists:batches,id',
-            'course_ids' => 'required|array',
-            'course_ids.*' => 'exists:courses,id',
-            'photo' => 'nullable|image|max:2048', // 2MB
-        ]);
+        try {
+            DB::beginTransaction();
+            // Validation
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'father_name' => 'required|string|max:255',
+                'mother_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:students,email',
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string',
+                'guardian_name' => 'nullable|string|max:255',
+                'guardian_phone' => 'nullable|string|max:20',
+                'guardian_relation' => 'nullable|string|max:100',
+                'status' => 'required|in:active,inactive',
+                'batch_id' => 'required|exists:batches,id',
+                'course_ids' => 'required|array',
+                'course_ids.*' => 'exists:courses,id',
+                'photo' => 'nullable|image|max:2048',
+            ]);
 
-        // Handle photo upload
-        $photoPath = null;
-        if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('students', 'public');
+            // Photo upload
+            $photoPath = null;
+            if ($request->hasFile('photo')) {
+                $photoPath = $request->file('photo')->store('students', 'public');
+            }
+            // Create student
+            $student = Student::create([
+                'name' => $validated['name'],
+                'father_name' => $validated['father_name'],
+                'mother_name' => $validated['mother_name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'guardian_name' => $validated['guardian_name'] ?? null,
+                'guardian_phone' => $validated['guardian_phone'] ?? null,
+                'guardian_relation' => $validated['guardian_relation'] ?? null,
+                'status' => $validated['status'],
+                'batch_id' => $validated['batch_id'],
+                'photo' => $photoPath,
+            ]);
+            // Attach courses
+            $student->courses()->attach($validated['course_ids']);
+
+            // UID generation
+            $batch = $student->batch;
+
+            $courseCode = Course::whereIn('id', $validated['course_ids'])
+                ->value('course_code') ?? 'XXX';
+
+            $yymm = Carbon::parse($batch->start_date)->format('ym');
+
+            $lastStudent = Student::where('batch_id', $batch->id)
+                ->whereNotNull('student_uid')
+                ->latest('id')
+                ->first();
+
+            $lastSerial = $lastStudent
+                ? (int) substr($lastStudent->student_uid, -6, 4)
+                : 0;
+
+            $serialNumber = str_pad($lastSerial + 1, 4, '0', STR_PAD_LEFT);
+            $firstLetter = strtoupper(substr($student->name, 0, 1));
+
+            $student->update([
+                'student_uid' => "SDC-{$courseCode}-{$yymm}-{$serialNumber}-{$firstLetter}-{$student->id}",
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('student.index')
+                ->with('success', 'Student created successfully');
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+            // Log full error (important for debugging)
+            Log::error('Student Create Failed', [
+                'error' => $e->getMessage(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to create student: ' . $e->getMessage());
         }
-
-        // Create student
-        $student = Student::create([
-            'name' => $validated['name'],
-            'father_name' => $validated['father_name'],
-            'mother_name' => $validated['mother_name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'guardian_name' => $validated['guardian_name'] ?? null,
-            'guardian_phone' => $validated['guardian_phone'] ?? null,
-            'guardian_relation' => $validated['guardian_relation'] ?? null,
-            'status' => $validated['status'],
-            'batch_id' => $validated['batch_id'],
-            'photo' => $photoPath,
-        ]);
-
-        // Attach courses
-        $student->courses()->attach($validated['course_ids']);
-
-        // 5. Generate Student UID
-        $batch = $student->batch;
-        $firstCourse = $student->courses()->first(); // take first course
-        $courseCode = $firstCourse->code ?? 'XXX';
-
-        // YYMM from batch start date
-        $yymm = "2025";
-
-        // SERIAL4: running serial for this batch
-        $serialCount = Student::where('batch_id', $batch->id)->count();
-        $serialNumber = str_pad($serialCount, 4, '0', STR_PAD_LEFT); // e.g., 0001, 0002
-
-        // First letter of student name
-        $firstLetter = strtoupper(substr($student->name, 0, 1));
-
-        // Final UID
-        $studentUid = "SDC-{$courseCode}-{$yymm}-{$serialNumber}-{$firstLetter}";
-
-        // Save UID
-        $student->student_uid = $studentUid;
-        $student->save();
-
-
-        return redirect()
-            ->route('student.index')
-            ->with('success', 'Student created successfully');
     }
 
 
@@ -135,19 +155,15 @@ class StudentController extends Controller
         $student = Student::with(['batch', 'courses'])->findOrFail($id->id);
         $batchs = Batch::select('id', 'name')->get();
         $courses = Course::select('id', 'name')->get();
+        $studentCourseIds = $student->courses->pluck('id')->toArray();
 
         return Inertia::render('student/update', [
-            'student' => [
-                'id' => $student->id,
-                'name' => $student->name,
-                'email' => $student->email,
-                'batch_id' => $student->batch_id,
-                'course_ids' => $student->courses->pluck('id')
-
-            ],
+            'student' => $student,
             'batches' => $batchs,
             'courses' => $courses,
+            'student_course_ids' => $studentCourseIds
         ]);
+
     }
 
     /**

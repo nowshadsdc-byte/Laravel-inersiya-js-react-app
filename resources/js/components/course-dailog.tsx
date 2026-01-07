@@ -31,6 +31,7 @@ export function CourseDailog({
 
   const { data, setData, put, processing } = useForm({
     name: "",
+    course_code : " ",
     description: "",
   })
 
@@ -64,6 +65,13 @@ export function CourseDailog({
             <Input
               value={data.name}
               onChange={(e) => setData("name", e.target.value)}
+            />
+          </div>
+          <div className="grid gap-4 mt-4">
+            <Label>course_code</Label>
+            <Input
+              value={data.course_code}
+              onChange={(e) => setData("course_code", e.target.value)}
             />
           </div>
 

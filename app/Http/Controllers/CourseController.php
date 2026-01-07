@@ -40,11 +40,7 @@ class CourseController extends Controller
             'course_code' => 'required|string',
             'description' => 'nullable|string',
         ]);
-
         $result = Course::create($validated);
-
-        
-
         return redirect()->route('courses.index')->with('success', 'Batch created successfully.');
     }
 
