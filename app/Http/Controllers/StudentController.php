@@ -191,13 +191,20 @@ class StudentController extends Controller
                 'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
             ]);
 
+
             // Handle photo upload if present
-            if ($request->hasFile('photo')) {
-                // Delete old photo
-                if ($id->photo && Storage::disk('public')->exists($id->photo)) {
-                    Storage::disk('public')->delete($id->photo);
+            $validated['photo'] = $student->photo;
+
+            if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+                // delete old photo (if exists)
+                if (!empty($student->photo) && Storage::disk('public')->exists($student->photo)) {
+                    Storage::disk('public')->delete($student->photo);
                 }
-                $validated['photo'] = $request->file('photo')->store('students', 'public');
+
+                // store new photo
+                $validated['photo'] = $request
+                    ->file('photo')
+                    ->store('students', 'public');
             }
 
             $fieldsToUpdate = [];

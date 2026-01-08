@@ -146,7 +146,7 @@ export default function StudentEdit({ student, batches, courses, student_course_
                             <Input
                                 type="file"
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    if (e.target.files?.[0]) setData('photo', e.target.files?.[0] || null);
+                                    if (e.target.files?.[0]) setData('photo', e.target.files?.[0] || student.photo);
                                 }}
                             />
                             {errors.photo && <p className="text-red-500">{errors.photo}</p>}
