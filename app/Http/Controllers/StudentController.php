@@ -170,32 +170,25 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $id )
+    public function update(Request $request, Student $id)
     {
         try {
-            // Email validation: only if email is provided
-            $emailRule = ['sometimes', 'required', 'email'];
-            if ($request->filled('email')) {
-                $emailRule[] = Rule::unique('students', 'email')->ignore($id->id);
-            }
-
-            // Validate request
+            $student = Student::findorFail($id->id);
             $validated = $request->validate([
-                'name' => 'sometimes|required|string|max:255',
-                'father_name' => 'sometimes|required|string|max:255',
-                'mother_name' => 'sometimes|required|string|max:255',
-                'student_uid' => 'sometimes|nullable|string|max:255',
-                'phone' => 'sometimes|nullable|string|max:20',
-                'email' => $emailRule,
-                'address' => 'sometimes|nullable|string',
-                'guardian_name' => 'sometimes|nullable|string|max:255',
-                'guardian_phone' => 'sometimes|nullable|string|max:20',
-                'guardian_relation' => 'sometimes|nullable|string|max:100',
-                'status' => 'sometimes|required|in:active,inactive',
-                'batch_id' => 'sometimes|required|exists:batches,id',
-                'course_ids' => 'nullable|array',
+                'name' => 'required|string|max:255',
+                'father_name' => 'required|string|max:255',
+                'mother_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:students,email' . $student->id,
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string',
+                'guardian_name' => 'nullable|string|max:255',
+                'guardian_phone' => 'nullable|string|max:20',
+                'guardian_relation' => 'nullable|string|max:100',
+                'status' => 'required|in:active,inactive',
+                'batch_id' => 'required|exists:batches,id',
+                'course_ids' => 'required|array',
                 'course_ids.*' => 'exists:courses,id',
-                'photo' => 'sometimes|nullable|file|image|max:2048', // only validate if file uploaded
+                'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
             ]);
 
             // Handle photo upload if present
@@ -207,7 +200,6 @@ class StudentController extends Controller
                 $validated['photo'] = $request->file('photo')->store('students', 'public');
             }
 
-            // Filter only fields that are actually different from DB
             $fieldsToUpdate = [];
             foreach ($validated as $key => $value) {
                 if ($key === 'course_ids') continue; // handle separately
@@ -216,7 +208,6 @@ class StudentController extends Controller
                     $fieldsToUpdate[$key] = $value;
                 }
             }
-
             // Update only changed fields
             if (!empty($fieldsToUpdate)) {
                 $id->update($fieldsToUpdate);
@@ -226,7 +217,6 @@ class StudentController extends Controller
             if (array_key_exists('course_ids', $validated)) {
                 $id->courses()->sync($validated['course_ids'] ?? []);
             }
-
             return redirect()
                 ->route('student.index')
                 ->with('success', 'Student updated successfully');

@@ -18,7 +18,7 @@ interface Student {
     student_uid?: string | null;
     phone?: string | null;
     email: string;
-    photo?: File | string | null;
+    photo: File | null;
     address?: string | null;
     guardian_name?: string | null;
     guardian_phone?: string | null;
@@ -54,7 +54,7 @@ export default function StudentEdit({ student, batches, courses, student_course_
         student_uid: student.student_uid ?? '',
         phone: student.phone ?? '',
         email: student.email,
-        photo: student.photo ?? ' ',
+        photo: null,
         address: student.address ?? '',
         guardian_name: student.guardian_name ?? '',
         guardian_phone: student.guardian_phone ?? '',
@@ -66,7 +66,9 @@ export default function StudentEdit({ student, batches, courses, student_course_
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/students/edit/${student.id}`);
+        put(`/students/edit/${student.id}`, {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -134,9 +136,9 @@ export default function StudentEdit({ student, batches, courses, student_course_
                         <div>
                             <Label>Photo</Label>
 
-                            {data.photo && typeof data.photo === 'string' && (
+                            {student.photo && typeof student.photo === 'string' && (
                                 <img
-                                    src={`/storage/${data.photo}`}
+                                    src={`/storage/${student.photo}`}
                                     alt="Student Photo"
                                     className="w-32 h-32 object-cover rounded mb-2 border"
                                 />
@@ -144,7 +146,7 @@ export default function StudentEdit({ student, batches, courses, student_course_
                             <Input
                                 type="file"
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    if (e.target.files?.[0]) setData('photo', e.target.files[0]);
+                                    if (e.target.files?.[0]) setData('photo', e.target.files?.[0] || null);
                                 }}
                             />
                             {errors.photo && <p className="text-red-500">{errors.photo}</p>}
