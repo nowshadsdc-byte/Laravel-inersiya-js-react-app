@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/batch/create', [BatchController::class, 'create'])->name('batch.create');
+    Route::get('batch/show/{id}', [BatchController::class, 'show'])->name('batch.show');
     Route::post('/batch/create', [BatchController::class, 'store'])->name('batches.store');
     route::get('/batch/{id}/edit', [BatchController::class, 'edit'])->name('batch.edit');
     route::put('/batch/edit/{id}', [BatchController::class, 'update'])->name('batch.update');
@@ -42,12 +43,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/students', [StudentController::class, 'index'])->name('student.index');
     Route::get('/students/create', [StudentController::class, 'create'])->name('student.create');
     Route::post('/students/create', [StudentController::class, 'store'])->name('student.store');
-    Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('student.edit');
-    Route::put('/students/edit/{id}',[StudentController::class,'update'])->name('student.update');
-    Route::delete('/student/{id}',[StudentController::class,'destroy'])->name('student.delete');
+    Route::get('/student/edit/{id}', [StudentController::class, 'edit'])->name('student.edit');
+    Route::put('/students/edit/{id}', [StudentController::class, 'update'])->name('student.update');
+    Route::delete('/student/{id}', [StudentController::class, 'destroy'])->name('student.delete');
 
     //Student Profile View Route 
-    Route::get('/student/profile/{id}',[StudentController::class,'studentDetails'])->name('student.profile');
+    Route::get('/student/profile/{id}', [StudentController::class, 'studentDetails'])->name('student.profile');
 });
 
 require __DIR__ . '/settings.php';

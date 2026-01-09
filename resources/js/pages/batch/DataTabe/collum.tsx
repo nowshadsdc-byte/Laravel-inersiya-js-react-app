@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 import { Batch } from "@/types/Batch"
 
 
@@ -23,7 +23,7 @@ export const columns: ColumnDef<Batch>[] = [
     accessorKey: "course.name",
     header: "Course Name",
   },
-    {
+  {
     accessorKey: "TotalClass",
     header: "Total Class",
   },
@@ -43,6 +43,15 @@ export const columns: ColumnDef<Batch>[] = [
 
       return (
         <div className="flex gap-2">
+          {/* View Batch */}
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => router.get(`batch/show/${batch.id}`)}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+
           {/* Edit */}
           <Button
             size="icon"

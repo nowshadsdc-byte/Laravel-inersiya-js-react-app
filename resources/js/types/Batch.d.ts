@@ -7,6 +7,7 @@ export interface Batch {
   TotalClass: string | null
   created_at: string
   updated_at: string
+  students?: Array 
 }
 
 

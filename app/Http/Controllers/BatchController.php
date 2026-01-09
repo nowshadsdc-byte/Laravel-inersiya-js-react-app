@@ -25,7 +25,7 @@ class BatchController extends Controller
      */
     public function create()
     {
-        return Inertia::render('batch/create',['courses' => Course::select('id', 'name')->get(),]);
+        return Inertia::render('batch/create', ['courses' => Course::select('id', 'name')->get(),]);
     }
 
     /**
@@ -35,21 +35,29 @@ class BatchController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'batch_code'=>'required', 
+            'batch_code' => 'required',
             'course_id' => 'required|exists:courses,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'TotalClass' => 'required|integer|min:1',
         ]);
-        
+
         Batch::create($validated);
         return redirect()->route('batch.index')->with('success', 'Batch created successfully.');
-    }    /**
+    }
+    /**
      * Display the specified resource.
      */
-    public function show(Batch $batch)
+    public function show(Batch $id)
     {
-        //
+        $batchData = Batch::with(
+            'students',
+            'course:id,name'
+        )->findOrFail($id->id);
+
+        return Inertia::render("batch/show", [
+            'batch' => $batchData
+        ]);
     }
 
     /**
@@ -63,7 +71,7 @@ class BatchController extends Controller
             'id' => $data->id,
             'name' => $data->name,
             'course_id' => $data->course_id,
-            'batch_code'=>$data->batch_code,
+            'batch_code' => $data->batch_code,
             'start_date' => $data->start_date,
             'end_date' => $data->end_date,
             'TotalClass' => $data->TotalClass,
@@ -72,34 +80,32 @@ class BatchController extends Controller
             'batch' => $batch,
             'courses' => Course::select('id', 'name')->get(),
         ]);
-
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Batch $id)
-    {   
+    {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'course_id' => 'required|exists:courses,id',
             'start_date' => 'required|date',
-            'batch_code'=> 'required | string',
+            'batch_code' => 'required | string',
             'end_date' => 'required|date|after_or_equal:start_date',
             'TotalClass' => 'required|integer|min:1',
         ]);
 
         $batch = Batch::findOrFail($id->id);
-        $batch->update($validated); 
+        $batch->update($validated);
 
         if ($batch) {
             return redirect()->route('batch.index')->with('success', 'Batch updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update batch.');
         }
-        
     }
-     
+
     public function destroy(Batch $id)
     {
         $id->delete();

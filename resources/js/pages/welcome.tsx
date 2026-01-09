@@ -26,7 +26,10 @@ export default function Welcome({
       </Head>
       <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
         <header className="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
+          <Link>Logo</Link>
           <nav className="flex items-center justify-end gap-4">
+            <Link href={'/'}>Home</Link>
+            <Link>Download</Link>
             {auth.user ? (
               <Link
                 href={dashboard()}
@@ -64,7 +67,7 @@ export default function Welcome({
               <div className="flex flex-col gap-4">
                 <input
                   type="text"
-                  placeholder="Enter Certificate ID"
+                  placeholder="SDC-Digital-2503-0003-S-11"
                   className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-gray-700 dark:bg-[#111] dark:text-gray-100"
                 />
                 <Button className="w-full">
