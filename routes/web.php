@@ -6,6 +6,7 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VarifyCertificate;
 use Symfony\Component\Routing\Router;
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:10,1');
     Route::post('/certificate', [VarifyCertificate::class, 'show'])
         ->middleware('throttle:10,1');
+
+    Route::get('/student/pdf',[PdfController::class,'student'])->name('student.pdf')->withoutMiddleware([
+        \App\Http\Middleware\HandleInertiaRequests::class,
+    ]);
 
 });
 
