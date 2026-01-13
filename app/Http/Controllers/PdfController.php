@@ -25,4 +25,8 @@ class PdfController extends Controller
             ]
         );
     }
+    public function varifycopy(Request $request, Student $id){
+        
+
+    }
 }

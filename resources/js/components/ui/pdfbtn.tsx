@@ -7,7 +7,8 @@ interface PdfButtonProps {
 
 export function PdfButton({ href, label = "Download PDF" }: PdfButtonProps) {
   return (
-    <Button asChild>
+    
+    <Button className="max-w-[30%]" asChild>
       <a
         href={href}
         target="_blank"

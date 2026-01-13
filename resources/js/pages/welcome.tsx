@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CertificateResult } from '@/types/CertificateResult';
+import { PdfButton } from '@/components/ui/pdfbtn';
 
 // Regex for UID validation
 const UID_REGEX = /^SDC-[A-Z]{2,5}-\d{4}-\d{4}-[A-Z]-\d+$/;
@@ -53,7 +54,6 @@ export default function Welcome({ canRegister = false }: { canRegister?: boolean
 
   const { props } = usePage<MyPageProps>();
   const { status, message, data: info } = props;
-
   return (
     <>
       <Head title="Verify Certificate" />
@@ -101,6 +101,7 @@ export default function Welcome({ canRegister = false }: { canRegister?: boolean
 
               <table className="w-full text-sm">
                 <tbody className="divide-y">
+                  <h1>{}</h1>
                   {Object.entries(info).map(([key, value]) => {
                     let displayValue: React.ReactNode = '—';
 
@@ -133,6 +134,8 @@ export default function Welcome({ canRegister = false }: { canRegister?: boolean
                   })}
                 </tbody>
               </table>
+             
+
             </div>
           )}
 

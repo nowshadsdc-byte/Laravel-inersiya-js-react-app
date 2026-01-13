@@ -19,8 +19,11 @@ export default function Index({ students }: { students: Student[] }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Student Dashboard" />
-            <Button onClick={() => router.get('/students/create')} className='w-3/12 my-6 mx-6'>Add New Student</Button>
-            <PdfButton href='/student/pdf' label='Download PDF'></PdfButton>
+            <div className='w-[100%] flex items-center justify-between'>
+                <Button onClick={() => router.get('/students/create')} className='w-3/12 my-6 mx-6'>Add New Student</Button>
+                <PdfButton href='/student/pdf' label='Download PDF'></PdfButton>
+            </div>
+
             <DataTable columns={columns} data={students} searchKey="name">
             </DataTable>
         </AppLayout>
