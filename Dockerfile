@@ -1,18 +1,5 @@
-# Build stage for Node dependencies and assets
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /app
-
-COPY package.json package-lock.json* ./
-
-RUN npm ci
-
-COPY . .
-
-RUN npm run build
-
 # PHP application stage
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -22,7 +9,6 @@ RUN apk add --no-cache \
     unzip \
     libzip-dev \
     jpeg-dev \
-    png-dev \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
@@ -45,19 +31,22 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /app
 
+# Install Node.js for frontend build
+RUN apk add --no-cache nodejs npm
+
 # Copy the entire project
 COPY --chown=www-data:www-data . .
 
-# Copy built frontend assets from builder
-COPY --from=frontend-builder --chown=www-data:www-data /app/public/build ./public/build
+# Create necessary directories before composer install
+RUN mkdir -p storage/logs storage/framework storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Create necessary directories
-RUN mkdir -p storage/logs storage/framework storage/framework/cache storage/framework/sessions storage/framework/views \
-    && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+# Install Node.js dependencies
+RUN npm ci --omit=dev
 
 # Copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/nginx.conf
@@ -78,5 +67,8 @@ EXPOSE 80
 # Set permissions
 RUN chown -R www-data:www-data /app
 
+# Find supervisord path and create symlink if needed
+RUN which supervisord || find /usr -name supervisord 2>/dev/null || ln -sf /usr/bin/supervisord /usr/sbin/supervisord || true
+
 # Start supervisor
-CMD ["/usr/sbin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

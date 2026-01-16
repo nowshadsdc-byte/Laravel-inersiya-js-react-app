@@ -9,8 +9,7 @@ services:
     restart: unless-stopped
     working_dir: /app
     ports:
-      - "80:80"
-      - "443:443"
+      - "8000:80"
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -42,8 +41,6 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD:-app_password}
       MYSQL_USER: ${DB_USERNAME:-app_user}
       MYSQL_ALLOW_EMPTY_PASSWORD: 'false'
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -72,8 +69,6 @@ services:
     image: phpmyadmin:latest
     container_name: laravel_phpmyadmin
     restart: unless-stopped
-    ports:
-      - "8080:80"
     environment:
       PMA_HOST: mysql
       PMA_USER: ${DB_USERNAME:-app_user}
