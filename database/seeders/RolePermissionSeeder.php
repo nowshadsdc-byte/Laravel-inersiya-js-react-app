@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -13,25 +12,36 @@ class RolePermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run()
     {
-        $role = Role::create([
-            'name' => 'admin'
-        ]);
         $permissions = [
-            ['name' => 'Student Create'],
-            ['name' => 'Create Student'],
-            ['name' => 'Edit Student'],
-            ['name' => 'Delete Student'],
-            ['name' => 'Student Create'],
-            ['name' => 'Create Student'],
-            ['name' => 'Edit Student'],
-            ['name' => 'Delete Student'],
+            'view students',
+            'create students',
+            'edit students',
+            'delete students',
+            'view courses',
+            'manage courses',
+            'manage batches',
         ];
-        foreach ($permissions as $item) {
-            Permission::create($item);
-        };
-        $user = User::fast();
-        $user->assignRole('admin');
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        $admin = Role::firstOrCreate(['name' => 'Admin']);
+        $teacher = Role::firstOrCreate(['name' => 'Teacher']);
+        $student = Role::firstOrCreate(['name' => 'Student']);
+
+        $admin->givePermissionTo(Permission::all());
+
+        $teacher->givePermissionTo([
+            'view students',
+            'view courses',
+            'manage batches',
+        ]);
+
+        $student->givePermissionTo([
+            'view courses',
+        ]);
     }
 }

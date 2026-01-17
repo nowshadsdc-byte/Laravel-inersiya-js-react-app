@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Batch;
 use App\Models\Student;
-use Illuminate\Support\Facades\DB;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
    public function run(): void
 {
-    $this->call(RolePermissionSeeder::class);
+
     
     User::factory(10)->create();
 
