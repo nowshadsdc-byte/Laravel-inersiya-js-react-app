@@ -8,7 +8,6 @@ use App\Models\Batch;
 use App\Models\Student;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +25,6 @@ class StudentController extends Controller
     // Singel Student Profile info 
     public function studentDetails(Student $id)
     {
-
         $studentData = Student::with(['batch', 'courses'])->findOrFail($id->id);
         return Inertia::render('student/studentProfile', [
             'studentData' => $studentData,

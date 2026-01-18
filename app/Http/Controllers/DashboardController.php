@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Batch;
 use App\Models\Course;
 use App\Models\Student;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -20,5 +19,8 @@ class DashboardController extends Controller
             'totalBatchs'=>$totalBatch,
             'totalCourses'=>$totalCourses
         ]);
+    }
+    public function usersPermissions(){
+        return Inertia::render('settings/UsersPermissions');
     }
 }

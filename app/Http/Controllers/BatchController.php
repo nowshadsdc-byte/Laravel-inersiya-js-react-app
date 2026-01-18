@@ -45,7 +45,6 @@ class BatchController extends Controller
         return redirect()->route('batch.index')->with('success', 'Batch created successfully.');
     }
 
-
     /**
      * Display the specified resource.
      */

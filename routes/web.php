@@ -49,6 +49,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/student/pdf', [PdfController::class, 'student'])->name('student.pdf')->withoutMiddleware([
         HandleInertiaRequests::class,
     ]);
+
+    //Website settings routes
+    Route::get('/userspermissions', [DashboardController::class, 'usersPermissions'])->name('users.permissions');
+
 });
 
 require __DIR__ . '/settings.php';

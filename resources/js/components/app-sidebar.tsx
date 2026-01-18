@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid ,UserPlus, BookCheck, SwatchBook} from 'lucide-react';
+import { LayoutGrid ,UserPlus, BookCheck, SwatchBook,ReceiptText} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -41,14 +41,14 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
       {
-        title: 'Website',
-        href: '/',
+        title: 'Users & Permissions',
+        href: '/userspermissions',
         icon: LayoutGrid,
     },
       {
-        title: 'Website User',
+        title: 'Billings ',
         href: '/',
-        icon: LayoutGrid,
+        icon: ReceiptText,
     }, {
         title: 'Website Config',
         href: '/',
