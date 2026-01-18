@@ -17,7 +17,7 @@ export default function Create({ courses }: { courses: { id: number; name: strin
         batch_code:" ",
         start_date: "",
         end_date: "",
-        total_class: 0,
+        TotalClass: 0,
 
     })
     const breadcrumbs: BreadcrumbItem[] = [
@@ -69,10 +69,10 @@ export default function Create({ courses }: { courses: { id: number; name: strin
                         <div className="my-4">
                             <Label>TotalClass</Label>
                             <Input type='number'
-                                value={data.total_class}
-                                onChange={(e) => setData("total_class", e.target.value ? Number(e.target.value) : 0)}
+                                value={data.TotalClass}
+                                onChange={(e) => setData("TotalClass", e.target.value ? Number(e.target.value) : 0)}
                             />
-                            {errors.total_class && <p className="text-red-500 text-sm">{errors.total_class}</p>}
+                            {errors.TotalClass && <p className="text-red-500 text-sm">{errors.TotalClass}</p>}
                         </div>
                         <div className="my-4">
                             <Label>Course</Label>

@@ -15,41 +15,11 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-   public function run(): void
-{
+    public function run(): void
+    {
 
-    
-    User::factory(10)->create();
 
-    User::firstOrCreate(
-        ['email' => 'test@example.com'],
-        [
-            'name' => 'Test User',
-            'password' => 'password',
-            'email_verified_at' => now(),
-        ]
-    );
-
-    // Create courses with batches and students
-    Course::factory()
-        ->count(10)
-        ->create()
-        ->each(function ($course) {
-            // each course has 2 batches
-            Batch::factory()
-                ->count(2)
-                ->create([
-                    'course_id' => $course->id,
-                ])
-                ->each(function ($batch) {
-
-                    // each batch has 5 students
-                    Student::factory()
-                        ->count(5)
-                        ->create([
-                            'batch_id' => $batch->id,
-                        ]);
-                });
-        });
-}
+        $this->call(RolePermissionSeeder::class);
+        $this->call(UserSeeder::class);
+    }
 }

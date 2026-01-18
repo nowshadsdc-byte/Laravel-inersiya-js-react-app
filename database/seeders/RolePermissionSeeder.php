@@ -28,19 +28,36 @@ class RolePermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
-        $teacher = Role::firstOrCreate(['name' => 'Teacher']);
-        $student = Role::firstOrCreate(['name' => 'Student']);
+        $admin = Role::create(['name' => 'admin']);
+        $user  = Role::create(['name' => 'user']);
+        $accounts = Role::create(['name' => 'accounts']);
+        $teacher = Role::create(['name' => 'teacher']);
+        $student = Role::create(['name' => 'student']);
+        $editor = Role::create(['name' => 'editor']);
 
         $admin->givePermissionTo(Permission::all());
 
-        $teacher->givePermissionTo([
+        $user->givePermissionTo([
             'view students',
             'view courses',
             'manage batches',
         ]);
 
         $student->givePermissionTo([
+            'view courses',
+        ]);
+        $teacher->givePermissionTo([
+            'view students',
+            'view courses',
+        ]);
+        $accounts->givePermissionTo([
+            'view students',
+            'view courses',
+        ]);
+        $editor->givePermissionTo([
+            'view students',
+            'create students',
+            'edit students',
             'view courses',
         ]);
     }

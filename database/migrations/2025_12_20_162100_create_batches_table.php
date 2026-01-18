@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('batches', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('batch_code', 4)->unique();
+            $table->string('batch_code', 4)->unique()->nullable();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('total_class')->nullable();
+            $table->string('TotalClass')->nullable();
             $table->timestamps();
         });
     }

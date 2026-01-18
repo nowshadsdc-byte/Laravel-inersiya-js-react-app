@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('father_name');
-            $table->string('mother_name');
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
             $table->string('student_uid')->unique()->nullable();
             $table->string('phone')->nullable();
             $table->string('status')->default('active');

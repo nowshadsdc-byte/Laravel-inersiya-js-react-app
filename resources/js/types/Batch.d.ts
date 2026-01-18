@@ -22,5 +22,5 @@ export interface BatchFormData {
   batch_code: string | " "
   start_date: string
   end_date: string
-  total_class: number | 30
+  TotalClass: number | 30
 }
