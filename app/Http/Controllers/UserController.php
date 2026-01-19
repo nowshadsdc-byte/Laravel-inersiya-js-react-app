@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -48,7 +49,15 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $rols = Role::all();
+        $roleId = $user->roles->pluck('id')->toArray();
+
+        return Inertia::render('user/edit', [
+            'user' => $user,
+            'roles' => $rols,
+            'assignedRoles' => $roleId,
+        ]);
     }
 
     /**

@@ -74,7 +74,7 @@ export default function StudentEdit({ student, batches, courses, student_course_
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Update Student" />
-            <div className="m-6">
+            <div className="m-6 p-6 max-w-4xl">
                 <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Left Column */}
                     <div className="flex flex-col gap-4">

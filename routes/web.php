@@ -61,10 +61,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/role/delete/{id}',[RoleController::class,'destroy'])->name('role.delete');
     //Website user Routes
     Route::get('/users',[UserController::class,'index'])->name('users.index');
+    Route::get('/users/create',[UserController::class,'create'])->name('users.create');
+    Route::post('/users/create',[UserController::class,'store'])->name('users.store');
+    Route::get('/users/edit/{id}',[UserController::class,'edit'])->name('users.edit');
+    Route::put('/users/edit/{id}',[UserController::class,'update'])->name('users.update');
+    Route::delete('/users/delete/{id}',[UserController::class,'destroy'])->name('users.delete');
     //Billing Routes
-    Route::middleware(['permission:'])->group(function () {
-        Route::get('/billings',[BillingController::class,'index'])->name('billings.index');
-    });
+    Route::get('/billings',[BillingController::class,'index'])->name('billings.index');
 
 });
 
