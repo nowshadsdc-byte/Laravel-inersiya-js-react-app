@@ -23,7 +23,6 @@ class RoleController extends Controller
             ];
         });
 
-
         return inertia('role/index', [
             'roles' => $roles,
         ]);
@@ -75,12 +74,11 @@ class RoleController extends Controller
     {
        try {
             $role = Role::findById($id);
+
         } catch (\Exception $e) {
             $role = Role::findOrFail($id,'api');
         }
-
         $permissions = Permission::all();
-
         return Inertia::render('role/edit', [
             'role' => $role,
             'permissions' => $permissions,
@@ -126,6 +124,12 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $findRole = Role::findById($id, 'web');
+        if ($findRole->name === 'admin') {
+            return redirect()->back()->with('error', 'The admin role cannot be deleted.');  
+        }   
+        $findRole->delete();
+        return redirect()->back()->with('success', 'Role deleted successfully.');
+
     }
 }

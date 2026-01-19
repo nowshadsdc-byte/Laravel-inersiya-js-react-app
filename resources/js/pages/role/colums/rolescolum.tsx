@@ -50,7 +50,7 @@ export const rolescolum: ColumnDef<Role>[] = [
                         variant="destructive"
                         onClick={() => {
                             if (confirm("Are you sure you want to delete this batch?")) {
-                                router.delete(`/batch/${role.id}`)
+                                router.delete(`/role/delete/${role.id}`)
                             }
                         }}
                     >
