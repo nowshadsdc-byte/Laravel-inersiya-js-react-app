@@ -71,6 +71,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //Lead Routes
     Route::get('/leads', [App\Http\Controllers\LeadController::class, 'index'])->name('leads.index');
+    Route::get('/leads/create', [App\Http\Controllers\LeadController::class, 'create'])->name('leads.create');
+    Route::post('/leads/create', [App\Http\Controllers\LeadController::class, 'store'])->name('leads.store');
+    Route::get('/leads/edit/{id}', [App\Http\Controllers\LeadController::class, 'edit'])->name('leads.edit');
+    Route::put('/leads/edit/{id}', [App\Http\Controllers\LeadController::class, 'update'])->name('leads.update');
+    Route::delete('/leads/delete/{id}', [App\Http\Controllers\LeadController::class, 'destroy'])->name('leads.delete');
 
 });
 

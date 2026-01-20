@@ -56,7 +56,6 @@ export default function Welcome() {
   return (
     <>
       <Head title="Verify Certificate" />
-
       <main className="flex min-hscreen items-center justify-center bg-[#FDFDFC] p-6 dark:bg-[#0a0a0a]">
         <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-xl dark:bg-[#0f0f0f]">
           <h1 className="mb-6 text-center text-2xl font-semibold">

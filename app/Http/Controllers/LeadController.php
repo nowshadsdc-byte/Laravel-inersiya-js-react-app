@@ -12,6 +12,7 @@ class LeadController extends Controller
      */
     public function index()
     {
+        
         return Inertia::render('lead/index');
     }
 

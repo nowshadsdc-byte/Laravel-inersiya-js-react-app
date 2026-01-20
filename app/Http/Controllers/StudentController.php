@@ -130,7 +130,6 @@ class StudentController extends Controller
                 'file'  => $e->getFile(),
                 'line'  => $e->getLine(),
             ]);
-
             return back()
                 ->withInput()
                 ->with('error', 'Failed to create student: ' . $e->getMessage());

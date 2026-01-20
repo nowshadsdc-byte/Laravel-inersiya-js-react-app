@@ -52,7 +52,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $rols = Role::all();
         $roleId = $user->roles->pluck('id')->toArray();
-
+        
         return Inertia::render('user/edit', [
             'user' => $user,
             'roles' => $rols,
@@ -71,7 +71,14 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'roles' => 'array',
             'roles.*' => 'exists:roles,id',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        // Handle profile picture upload if provided
+        if (isset($request['profile_picture'])) {
+            $path = $request['profile_picture']->store('profile_pictures', 'public');
+            $user->profile_picture = $path;
+        }
+        
         $user->update([
             'name' => $request['name'],
             'email' => $request['email'],
