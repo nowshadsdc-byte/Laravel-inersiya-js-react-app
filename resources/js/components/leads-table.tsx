@@ -66,8 +66,7 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
-import { LeadSource, LeadStatus, LeadProfile } from "@/types/Leads"
-
+import { LeadSource, LeadStatus, User, Lead } from "@/types/Leads"
 
 type SortDirection = "asc" | "desc" | null
 type SortField = "status" | "source" | "assignedUser" | "occupation" | "company" | "interest"
@@ -108,14 +107,15 @@ const statusColors: Record<string, string> = {
   Lost: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 }
 //Now, the LeadsTable component
-export function LeadsTable({ leads ,users ,lead_statuses, leadSources ,leadStatus, leadProfile}: { leads: Lead[], users: User[] , lead_statuses: LeadStatus[] , leadSources: LeadSource[], leadStatus: LeadStatus, leadProfile: LeadProfile}) {
+export function LeadsTable({ leads, users, lead_statuses, leadSources, leadStatus }: { leads: Lead[], users: User[], lead_statuses: LeadStatus[], leadSources: LeadSource[], leadStatus: LeadStatus }) {
 
-  const allLeads = leads.data ;
+  const allLeads = leads ;
   const userss = users; 
   const leadStatuses = lead_statuses;
   const leadSourcess = leadSources;
   const leadStatusss = leadStatus;
-  const leadProfilee = leadProfile;
+
+  console.log("leadStatusss",leadStatusss,leadSourcess, userss);
 
   // Filters
   const [globalSearch, setGlobalSearch] = useState("")
@@ -167,10 +167,10 @@ export function LeadsTable({ leads ,users ,lead_statuses, leadSources ,leadStatu
   const [selectedRows, setSelectedRows] = useState<number[]>([])
 
   // Get unique values for filters
-  const uniqueTowns = useMemo(() => [...new Set(allLeads.map((l) => l.town))].sort(), [])
-  const uniqueOccupations = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.occupation).filter(Boolean))].sort() as string[], [])
-  const uniqueCompanies = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.company).filter(Boolean))].sort() as string[], [])
-  const uniqueInterests = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.interest).filter(Boolean))].sort() as string[], [])
+  const uniqueTowns = useMemo(() => [...new Set(allLeads.map((l) => l.town))].sort(), [allLeads])
+  const uniqueOccupations = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.occupation).filter(Boolean))].sort() as string[], [allLeads])
+  const uniqueCompanies = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.company).filter(Boolean))].sort() as string[], [allLeads])
+  const uniqueInterests = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.interest).filter(Boolean))].sort() as string[], [allLeads])
 
   // Filter and sort data
   const filteredData = useMemo(() => {
@@ -322,6 +322,7 @@ export function LeadsTable({ leads ,users ,lead_statuses, leadSources ,leadStatu
 
     return data
   }, [
+    allLeads,
     globalSearch,
     selectedStatuses,
     selectedSources,
@@ -338,6 +339,7 @@ export function LeadsTable({ leads ,users ,lead_statuses, leadSources ,leadStatu
     hasCompletedReminders,
     sortField,
     sortDirection,
+    users,
   ])
 
   // Pagination
