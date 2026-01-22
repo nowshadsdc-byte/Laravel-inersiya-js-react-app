@@ -66,16 +66,11 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
-import {
-  Lead,
-  leads as allLeads,
-  leadStatuses,
-  leadSources,
-  users,
-} from "../lib/data"
+import { LeadSource, LeadStatus, LeadProfile } from "@/types/Leads"
+
 
 type SortDirection = "asc" | "desc" | null
-type SortField = keyof Lead | "status" | "source" | "assignedUser" | "occupation" | "company" | "interest"
+type SortField = "status" | "source" | "assignedUser" | "occupation" | "company" | "interest"
 
 interface ColumnVisibility {
   id: boolean
@@ -112,8 +107,16 @@ const statusColors: Record<string, string> = {
   Won: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300",
   Lost: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 }
+//Now, the LeadsTable component
+export function LeadsTable({ leads ,users ,lead_statuses, leadSources ,leadStatus, leadProfile}: { leads: Lead[], users: User[] , lead_statuses: LeadStatus[] , leadSources: LeadSource[], leadStatus: LeadStatus, leadProfile: LeadProfile}) {
 
-export function LeadsTable() {
+  const allLeads = leads.data ;
+  const userss = users; 
+  const leadStatuses = lead_statuses;
+  const leadSourcess = leadSources;
+  const leadStatusss = leadStatus;
+  const leadProfilee = leadProfile;
+
   // Filters
   const [globalSearch, setGlobalSearch] = useState("")
   const [selectedStatuses, setSelectedStatuses] = useState<number[]>([])

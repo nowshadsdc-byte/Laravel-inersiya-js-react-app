@@ -83,9 +83,9 @@ export interface User {
 
 // Mock Data
 export const leadStatuses: LeadStatus[] = [
-  { id: 1, name: "New", created_at: "2025-01-01", updated_at: "2025-01-01" },
-  { id: 2, name: "Contacted", created_at: "2025-01-01", updated_at: "2025-01-01" },
-  { id: 3, name: "Qualified", created_at: "2025-01-01", updated_at: "2025-01-01" },
+  { id: 1, name: "OLD", created_at: "2025-01-01", updated_at: "2025-01-01" },
+  { id: 2, name: "OLD", created_at: "2025-01-01", updated_at: "2025-01-01" },
+  { id: 3, name: "OLD", created_at: "2025-01-01", updated_at: "2025-01-01" },
   { id: 4, name: "Proposal Sent", created_at: "2025-01-01", updated_at: "2025-01-01" },
   { id: 5, name: "Negotiation", created_at: "2025-01-01", updated_at: "2025-01-01" },
   { id: 6, name: "Won", created_at: "2025-01-01", updated_at: "2025-01-01" },
@@ -103,8 +103,8 @@ export const leadSources: LeadSource[] = [
 ]
 
 export const users: User[] = [
-  { id: 1, name: "John Smith", email: "john@company.com" },
-  { id: 2, name: "Sarah Johnson", email: "sarah@company.com" },
+  { id: 1, name: "Nowshad", email: "nowshad@company.com" },
+  { id: 2, name: "Nowshad", email: "sarah@company.com" },
   { id: 3, name: "Mike Davis", email: "mike@company.com" },
   { id: 4, name: "Emily Brown", email: "emily@company.com" },
   { id: 5, name: "David Wilson", email: "david@company.com" },

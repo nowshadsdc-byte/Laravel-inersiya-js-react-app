@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
+use App\Models\LeadProfile;
 use App\Models\LeadSource;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
@@ -17,9 +18,20 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $data = Lead::with(['status', 'source'])->paginate(15);
-        return Inertia::render('lead/index',[
+        $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->paginate(15);
+        $users = DB::table('users')->get();
+        $lead_statuses = LeadStatus::all();
+        $LeadSources = LeadSource::all();
+        $LeadStatus= LeadStatus::all();
+        $leadProfile = LeadProfile::all();
+
+        return Inertia::render('lead/index', [
             'leads' => $data,
+            'users' => $users,
+            'lead_statuses' => $lead_statuses,
+            'leadSources' => $LeadSources,
+            'leadStatus' => $LeadStatus,
+            'leadProfile' => $leadProfile,
         ]);
     }
     public function upload()
@@ -69,7 +81,7 @@ class LeadController extends Controller
         return Inertia::flash([
             'message' => 'Leads imported successfully!',
             'type' => 'success',
-        ])->render('lead/index',[
+        ])->render('lead/index', [
             'data' => Lead::with(['status', 'source'])->paginate(15),
         ]);
     }

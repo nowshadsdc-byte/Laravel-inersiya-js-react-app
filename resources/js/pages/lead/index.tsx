@@ -1,22 +1,21 @@
 
-import { DataTable } from '@/components/DataTable/DataTable';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
+import { User, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { leadColumns } from './leadColums/leadColums';
-import { Lead } from '@/types/lead';
 import { LeadsTable } from '@/components/leads-table';
-
+import { Lead, LeadSource, LeadStatus } from '@/lib/data';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Lead Dashboard',
         href: dashboard().url,
     },
 ];
-export default function Index({ leads }: { leads: { data: Lead[] } }) {
-    console.log(leads, 'data lead');
+
+
+
+export default function Index({leads ,users ,lead_statuses,leadSources ,leadStatus ,leadProfile}: { leads: Lead , users: User[] , lead_statuses: LeadStatus[] , leadSources: LeadSource[] , leadStatus: LeadStatus[]}) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Lead Dashboard" />
@@ -29,7 +28,8 @@ export default function Index({ leads }: { leads: { data: Lead[] } }) {
             </div>
             <div className='m-6'>
                 <h1 className='text-2xl font-bold'>Lead Dashboard</h1>
-                <LeadsTable></LeadsTable>
+
+                <LeadsTable leads={leads} users={users} lead_statuses={lead_statuses} leadSources={leadSources} leadStatus={leadStatus} leadProfile={leadProfile}></LeadsTable>
             </div>
         </AppLayout>
     );

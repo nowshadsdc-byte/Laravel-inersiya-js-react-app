@@ -30,4 +30,9 @@ class Lead extends Model
     {
         return $this->hasMany(LeadReminder::class);
     }
+
+    public function profile()
+    {
+        return $this->hasOne(LeadProfile::class);
+    }
 }
