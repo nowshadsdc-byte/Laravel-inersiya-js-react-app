@@ -34,14 +34,19 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'course_code' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
-        $result = Course::create($validated);
-        return redirect()->route('courses.index')->with('success', 'Batch created successfully.');
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'course_code' => ['nullable', 'string', 'unique:courses,course_code'],
+                'description' => ['nullable', 'string'],
+            ]);
+
+            Course::create($validated);
+            return redirect()->route('courses.index')->with('success', 'Course created successfully');
+        } catch (\Exception $e) {
+            Log::error('Error creating course: ' . $e->getMessage());
+            return redirect()->back()->withErrors('An error occurred while creating the course. Please try again.');
+        }
     }
 
     /**
@@ -49,7 +54,6 @@ class CourseController extends Controller
      */
     public function show(Course $id)
     {
-
         $courseData = Course::with('batch')->findOrFail($id->id);
         return Inertia::render('course/showCours',[
             'course' =>$courseData

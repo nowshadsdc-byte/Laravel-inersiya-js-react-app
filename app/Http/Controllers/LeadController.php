@@ -18,13 +18,13 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->paginate(15);
+        $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->paginate(50);
         $users = DB::table('users')->get();
         $lead_statuses = LeadStatus::all();
         $LeadSources = LeadSource::all();
-        $LeadStatus= LeadStatus::all();
+        $LeadStatus = LeadStatus::all();
         $leadProfile = LeadProfile::all();
-
+        
         return Inertia::render('lead/index', [
             'leads' => $data,
             'users' => $users,
@@ -44,46 +44,57 @@ class LeadController extends Controller
             'file' => 'required|file|mimes:csv,txt|max:2048',
         ]);
 
-        $path = $request->file('file')->getRealPath();
-        $rows = array_map('str_getcsv', file($path));
+        try {
+            $path = $request->file('file')->getRealPath();
+            $rows = array_map('str_getcsv', file($path));
+            $header = array_map('trim', array_shift($rows));
+            $statusMap = LeadStatus::pluck('id', 'name')->toArray();
+            $sourceMap = LeadSource::pluck('id', 'name')->toArray();
 
-        $header = array_map('trim', array_shift($rows));
+              
+            DB::transaction(function () use ($rows, $header, $statusMap, $sourceMap) {
+                foreach (array_chunk($rows, 500) as $chunk) {
+                    $insert = [];
 
-        $statusMap = LeadStatus::pluck('id', 'name')->toArray();
-        $sourceMap = LeadSource::pluck('id', 'name')->toArray();
+                    foreach ($chunk as $row) {
+                        $data = array_combine($header, $row);
 
-        DB::transaction(function () use ($rows, $header, $statusMap, $sourceMap) {
+                        $insert[] = [
+                            'name'        => $data['name'],
+                            'email'       => $data['email'] ?? null,
+                            'phone'       => $data['phone'] ?? null,
+                            'whatsapp_number' => $data['whatsapp'] ?? null,
+                            'town'        => $data['town'] ?? null,
+                            'status_id'   => $statusMap[$data['status']] ?? $statusMap['new'],
+                            'source_id'   => $sourceMap[$data['source']] ?? null,
 
-            foreach (array_chunk($rows, 500) as $chunk) {
-                $insert = [];
+                            'created_at'  => now(),
+                            'updated_at'  => now(),
+                        ];
+                        
+                    }
 
-                foreach ($chunk as $row) {
-                    $data = array_combine($header, $row);
 
-                    $insert[] = [
-                        'name'        => $data['name'],
-                        'email'       => $data['email'] ?? null,
-                        'phone'       => $data['phone'] ?? null,
-                        'whatsapp_number' => $data['whatsapp'] ?? null,
-                        'town'        => $data['town'] ?? null,
-
-                        'status_id'   => $statusMap[$data['status']] ?? $statusMap['new'],
-                        'source_id'   => $sourceMap[$data['source']] ?? null,
-
-                        'created_at'  => now(),
-                        'updated_at'  => now(),
-                    ];
+                   Lead::insert($insert);
                 }
-
-                Lead::insert($insert);
-            }
-        });
-        return Inertia::flash([
-            'message' => 'Leads imported successfully!',
-            'type' => 'success',
-        ])->render('lead/index', [
-            'data' => Lead::with(['status', 'source'])->paginate(15),
-        ]);
+            });
+            return Inertia::flash([
+                'message' => 'Leads imported successfully!',
+                'type' => 'success',
+            ])->render('lead/index', [
+                'data' => Lead::with(['status', 'source'])->paginate(15),
+            ]);
+        } catch (\Throwable $e) {
+            dd($e);
+            // error response
+            return Inertia::flash([
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'type' => 'error',
+            ])->render('lead/index', [
+            
+                'data' => Lead::with(['status', 'source'])->paginate(15),
+            ]);
+        }
     }
 
     /**

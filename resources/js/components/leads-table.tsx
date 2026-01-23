@@ -66,8 +66,7 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
-import { LeadSource, LeadStatus, User, Lead } from "@/types/Leads"
-
+import { Lead, LeadSource, LeadStatus, User } from "@/types/Leads"
 type SortDirection = "asc" | "desc" | null
 type SortField = "status" | "source" | "assignedUser" | "occupation" | "company" | "interest"
 
@@ -107,16 +106,12 @@ const statusColors: Record<string, string> = {
   Lost: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 }
 //Now, the LeadsTable component
-export function LeadsTable({ leads, users, lead_statuses, leadSources, leadStatus }: { leads: Lead[], users: User[], lead_statuses: LeadStatus[], leadSources: LeadSource[], leadStatus: LeadStatus }) {
-
-  const allLeads = leads ;
+export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadStatus }: { leadsdata: any[], users: User[], lead_statuses: LeadStatus[], leadSources: LeadSource[], leadStatus: LeadStatus }) {
+  const allLeads = leadsdata.data;
   const userss = users; 
   const leadStatuses = lead_statuses;
   const leadSourcess = leadSources;
   const leadStatusss = leadStatus;
-
-  console.log("leadStatusss",leadStatusss,leadSourcess, userss);
-
   // Filters
   const [globalSearch, setGlobalSearch] = useState("")
   const [selectedStatuses, setSelectedStatuses] = useState<number[]>([])
@@ -955,7 +950,7 @@ export function LeadsTable({ leads, users, lead_statuses, leadSources, leadStatu
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div>
           Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
-          {filteredData.length} leads
+          {leadsdata.total} leads
           {filteredData.length !== allLeads.length && ` (filtered from ${allLeads.length} total)`}
         </div>
         {selectedRows.length > 0 && (
