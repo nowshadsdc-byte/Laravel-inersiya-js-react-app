@@ -270,6 +270,7 @@ class LeadController extends Controller
 
     public function create()
     {
+        
         $lead_statuses = LeadStatus::all();
         $lead_sources = LeadSource::all();
 
@@ -281,6 +282,7 @@ class LeadController extends Controller
 
     public function store(Request $request)
     {
+        
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -289,6 +291,8 @@ class LeadController extends Controller
             'town' => ['nullable', 'string', 'max:100'],
             'status_id' => ['required', 'exists:lead_statuses,id'],
             'source_id' => ['nullable', 'exists:lead_sources,id'],
+            'lead_notes' => ['nullable', 'string', 'max:255'],
+        
         ]);
 
         Lead::create($validated);
