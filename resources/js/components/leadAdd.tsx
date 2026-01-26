@@ -27,7 +27,7 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
         occupation: '',
         interest: ' ',
         reminder_at: '',
-        
+
 
 
     });
@@ -45,8 +45,9 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                 {/* Basic info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Name *</Label>
                         <Input
+                            required={true}
                             id="name"
                             value={data.name}
                             onChange={e => setData('name', e.target.value)}
@@ -69,8 +70,9 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                 {/* Phone numbers */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone">Phone *</Label>
                         <Input
+                            required={true}
                             id="phone"
                             value={data.phone}
                             onChange={e => setData('phone', e.target.value)}
@@ -95,8 +97,9 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                 {/* Selects – side by side */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <Label>Status</Label>
+                        <Label>Status *</Label>
                         <select
+                            required={true}
                             className="w-full border rounded-md px-3 py-2"
                             value={data.status_id}
                             onChange={e => setData('status_id', e.target.value)}
@@ -145,34 +148,61 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                         {errors.assigned_to && (
                             <p className="text-sm text-red-600">{errors.assigned_to}</p>
                         )}
+                        {errors.assigned_to && <p className="text-sm text-red-600">{errors.assigned_to}</p>}
+                    </div>
+                </div>
+                {/* Town */}
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+                    <div>
+                        <Label>Town</Label>
+                        <select
+                            className="w-full border rounded-md px-3 py-2"
+                            value={data.town}
+                            onChange={e => setData('town', e.target.value)}
+                        >
+                            <option value="">Select Town</option>
+                            {townNames.map(town => (
+                                <option key={town} value={town}>
+                                    {town}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.town && <p className="text-sm text-red-600">{errors.town}</p>}
+                    </div>
+                    <div className="">
+                        <Label htmlFor="address">Address</Label>
+                        <Input
+                            id="address"
+                            value={data.address}
+                            onChange={e => setData('address', e.target.value)}
+                        />
+                        {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
                     </div>
                 </div>
 
-                {/* Town */}
-                <div className="md:w-1/2">
-                    <Label>Town</Label>
-                    <select
-                        className="w-full border rounded-md px-3 py-2"
-                        value={data.town}
-                        onChange={e => setData('town', e.target.value)}
-                    >
-                        <option value="">Select Town</option>
-                        {townNames.map(town => (
-                            <option key={town} value={town}>
-                                {town}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <Label htmlFor="address">Address</Label>
-                    <Input
-                        id="address"
-                        value={data.address}
-                        onChange={e => setData('address', e.target.value)}
-                    />
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="occupation">Occupation</Label>
+                        <Input
+                            id="occupation"
+                            value={data.occupation}
+                            onChange={e => setData('occupation', e.target.value)}
+                        />
+                        {errors.occupation && <p className="text-sm text-red-600">{errors.occupation}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="company">Company</Label>
+                        <Input
+                            id="company"
+                            value={data.company}
+                            onChange={e => setData('company', e.target.value)}
+                        />
+                        {errors.company && <p className="text-sm text-red-600">{errors.company}</p>}
+                    </div>
 
                 </div>
+
+
                 {/* Notes */}
                 <div>
                     <Label htmlFor="lead_notes">Lead Notes</Label>
@@ -183,6 +213,7 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                         value={data.lead_notes}
                         onChange={e => setData('lead_notes', e.target.value)}
                     />
+                    {errors.lead_notes && <p className="text-sm text-red-600">{errors.lead_notes}</p>}
                 </div>
 
                 {/* Submit */}
@@ -191,7 +222,6 @@ export default function AddLead({ leadSources, leadStatuses, assignedTos, townNa
                         {processing ? 'Submitting…' : 'Submit Lead'}
                     </Button>
                 </div>
-
             </form>
 
 

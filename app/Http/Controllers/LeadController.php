@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\LeadProfile;
 use App\Models\LeadSource;
 use App\Models\LeadStatus;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\In;
@@ -293,16 +294,43 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'whatsapp_number' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:leads,email'],
+            'phone' => ['nullable', 'string', 'max:20', 'unique:leads,phone'],
+            'whatsapp_number' => ['nullable', 'string', 'max:20', 'unique:leads,whatsapp_number'],
             'status_id' => ['required', 'exists:lead_statuses,id'],
             'source_id' => ['nullable', 'exists:lead_sources,id'],
             'town' => ['nullable', 'string', 'max:100'],
+            'address' => ['nullable', 'string', 'max:255'],
             'lead_notes' => ['nullable', 'string', 'max:255'],
+            'assigned_to' => ['nullable', 'string', 'max:255'],
+            'occupation' => ['nullable', 'string', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
         ]);
 
-        Lead::create($validated);
+        $lead = Lead::create(collect($validated)->except('lead_notes')->toArray());
+
+        if (!empty($validated['lead_notes'])) {
+            $lead->notes()->create([
+                'lead_id'=>$lead->id,
+                'note' => $validated['lead_notes'],
+                'user_id' => auth()->user()->id,
+            ]);
+        }
+
+        if (!empty($validated['assigned_to'])) {
+            $user = User::where('id', $validated['assigned_to'])->first();
+            if ($user) {
+                $lead->assigned_to = $user->id;
+                $lead->save();
+            }
+        }
+        if(!empty($validated['occupation'])) {
+            $leadProfile = new LeadProfile();
+            $leadProfile->lead_id = $lead->id;
+            $leadProfile->occupation = $validated['occupation'];
+            $leadProfile->company = $validated['company'] ?? null;
+            $leadProfile->save();
+        }
 
         return redirect()->route('leads.index')->with('success', 'Lead created successfully');
     }

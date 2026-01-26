@@ -9,6 +9,7 @@ class LeadNote extends Model
     protected $fillable = [
         'lead_id',
         'note',
+        'user_id'
     ];
 
     public function lead()
