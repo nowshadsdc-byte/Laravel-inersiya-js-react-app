@@ -31,8 +31,6 @@ export default function Index({leads ,users ,lead_statuses,leadSources ,leadStat
             <div className='m-6'>
                 <h1 className='text-2xl font-bold'>Lead Dashboard</h1>                
                 <LeadsTable leadsdata={leads} users={users} lead_statuses={lead_statuses} leadSources={leadSources} leadStatus={leadStatus[0]} ></LeadsTable>
-
-                
             </div>
         </AppLayout>
     );

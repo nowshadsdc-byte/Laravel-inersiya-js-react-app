@@ -161,7 +161,7 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
   const [selectedRows, setSelectedRows] = useState<number[]>([])
 
   // Get unique values for filters
-  const uniqueTowns = useMemo(() => [...new Set(allLeads.map((l) => l.town))].sort(), [allLeads])
+  const uniqueTowns = useMemo(() => [...new Set(allLeads.map((l) => l.town))].sort(), [])
   const uniqueOccupations = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.occupation).filter(Boolean))].sort() as string[], [allLeads])
   const uniqueCompanies = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.company).filter(Boolean))].sort() as string[], [allLeads])
   const uniqueInterests = useMemo(() => [...new Set(allLeads.map((l) => l.profile?.interest).filter(Boolean))].sort() as string[], [allLeads])
@@ -173,14 +173,14 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
     // Global search
     if (globalSearch) {
       const search = globalSearch.toLowerCase()
-      data = data.filter(
-        (lead) =>
-          lead.name.toLowerCase().includes(search) ||
-          lead.email.toLowerCase().includes(search) ||
-          lead.phone.includes(search) ||
-          lead.town.toLowerCase().includes(search) ||
-          lead.profile?.company?.toLowerCase().includes(search) ||
-          lead.profile?.occupation?.toLowerCase().includes(search)
+
+      data = data.filter((lead) =>
+        (lead.name ?? "").toLowerCase().includes(search) ||
+        (lead.email ?? "").toLowerCase().includes(search) ||
+        (lead.phone ?? "").toLowerCase().includes(search) ||
+        (lead.town ?? "").toLowerCase().includes(search) ||
+        (lead.profile?.company ?? "").toLowerCase().includes(search) ||
+        (lead.profile?.occupation ?? "").toLowerCase().includes(search)
       )
     }
 
