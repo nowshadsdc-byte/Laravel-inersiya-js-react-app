@@ -68,7 +68,7 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Lead, LeadSource, LeadStatus, User } from "@/types/Leads"
 type SortDirection = "asc" | "desc" | null
-type SortField = "status" | "source" | "assignedUser" | "occupation" | "company" | "interest"
+type SortField = "id" | "name" | "email" | "town" | "status" | "source" | "assignedUser" | "occupation" | "company" | "interest" | "created_at" | "updated_at"
 
 interface ColumnVisibility {
   id: boolean
@@ -105,13 +105,12 @@ const statusColors: Record<string, string> = {
   Won: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300",
   Lost: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 }
+
 //Now, the LeadsTable component
-export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadStatus }: { leadsdata: any[], users: User[], lead_statuses: LeadStatus[], leadSources: LeadSource[], leadStatus: LeadStatus }) {
-  const allLeads = leadsdata.data;
-  const userss = users; 
+export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadStatus }: { leadsdata: Lead[], users: User[], lead_statuses: LeadStatus[], leadSources: LeadSource[], leadStatus: LeadStatus }) {
+  const allLeads = leadsdata;
   const leadStatuses = lead_statuses;
-  const leadSourcess = leadSources;
-  const leadStatusss = leadStatus;
+  void leadStatus; // Intentionally unused parameter
   // Filters
   const [globalSearch, setGlobalSearch] = useState("")
   const [selectedStatuses, setSelectedStatuses] = useState<number[]>([])
@@ -343,7 +342,6 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
     const start = (currentPage - 1) * pageSize
     return filteredData.slice(start, start + pageSize)
   }, [filteredData, currentPage, pageSize])
-
   // Handlers
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -358,7 +356,6 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
       setSortDirection("asc")
     }
   }
-
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) return <ArrowUpDown className="ml-1 h-3 w-3" />
     if (sortDirection === "asc") return <ArrowUp className="ml-1 h-3 w-3" />
@@ -950,7 +947,7 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <div>
           Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredData.length)} of{" "}
-          {leadsdata.total} leads
+          {leadsdata.length} leads
           {filteredData.length !== allLeads.length && ` (filtered from ${allLeads.length} total)`}
         </div>
         {selectedRows.length > 0 && (

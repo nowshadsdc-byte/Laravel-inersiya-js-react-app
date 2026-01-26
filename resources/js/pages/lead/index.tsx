@@ -17,8 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 
 
-export default function Index({leads ,users ,lead_statuses,leadSources ,leadStatus}: { leads: { data: Lead[] } , users: User[] , lead_statuses: LeadStatus[] , leadSources: LeadSource[] , leadStatus: LeadStatus[]}) {
-    console.log("leadStatus",leads);
+export default function Index({leads ,users ,lead_statuses,leadSources ,leadStatus}: { leads: Lead[] , users: User[] , lead_statuses: LeadStatus[] , leadSources: LeadSource[] , leadStatus: LeadStatus[]}) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Lead Dashboard" />
@@ -30,11 +29,8 @@ export default function Index({leads ,users ,lead_statuses,leadSources ,leadStat
 
             </div>
             <div className='m-6'>
-                <h1 className='text-2xl font-bold'>Lead Dashboard</h1>
-                
+                <h1 className='text-2xl font-bold'>Lead Dashboard</h1>                
                 <LeadsTable leadsdata={leads} users={users} lead_statuses={lead_statuses} leadSources={leadSources} leadStatus={leadStatus[0]} ></LeadsTable>
-                {/* <DataTable columns={columns} data={leads.data} ></DataTable> */}
-
 
                 
             </div>

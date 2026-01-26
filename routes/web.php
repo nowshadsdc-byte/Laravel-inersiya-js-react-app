@@ -73,6 +73,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //Lead Routes
     Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
     Route::get('/leads/create', [LeadController::class, 'create'])->name('leads.create');
+
+    Route::post('/leads/create', [LeadController::class, 'store'])->name('leads.store');
+    
     Route::get('/leads/upload', [LeadController::class, 'upload'])->name('leads.upload');
     Route::post('/leads/import', [LeadController::class, 'import'])->name('leads.import');
     Route::post('/leads/create', [LeadController::class, 'store'])->name('leads.store');

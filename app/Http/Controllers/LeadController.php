@@ -18,13 +18,13 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->paginate(50);
+        $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->latest()->get();
         $users = DB::table('users')->get();
         $lead_statuses = LeadStatus::all();
         $LeadSources = LeadSource::all();
         $LeadStatus = LeadStatus::all();
         $leadProfile = LeadProfile::all();
-        
+
         return Inertia::render('lead/index', [
             'leads' => $data,
             'users' => $users,
@@ -34,10 +34,23 @@ class LeadController extends Controller
             'leadProfile' => $leadProfile,
         ]);
     }
+
     public function upload()
     {
-        return Inertia::render('lead/upload');
+        $leadSources = LeadSource::all();
+        $leadStatuses = LeadStatus::all();
+        $assignedTos = DB::table('users')->get();
+        $townNames = DB::table('leads')->distinct()->pluck('town');
+
+        $leadSources = LeadSource::all();
+        return Inertia::render('lead/upload', [
+            'leadSources' => $leadSources,
+            'leadStatuses' => $leadStatuses,
+            'assignedTos' => $assignedTos,
+            'townNames' => $townNames,
+        ]);
     }
+
     public function import(Request $request)
     {
         $request->validate([
@@ -45,103 +58,252 @@ class LeadController extends Controller
         ]);
 
         try {
-            $path = $request->file('file')->getRealPath();
-            $rows = array_map('str_getcsv', file($path));
+            $file = $request->file('file');
+
+            if (! $file->isValid()) {
+                return back()->withErrors(['file' => 'Invalid file uploaded.']);
+            }
+
+            $path = $file->getRealPath();
+            $fileContent = file($path);
+
+            if (empty($fileContent)) {
+                return back()->withErrors(['file' => 'The CSV file is empty.']);
+            }
+
+            $rows = array_map('str_getcsv', $fileContent);
+
+            if (empty($rows)) {
+                return back()->withErrors(['file' => 'The CSV file contains no data rows.']);
+            }
+
             $header = array_map('trim', array_shift($rows));
-            $statusMap = LeadStatus::pluck('id', 'name')->toArray();
-            $sourceMap = LeadSource::pluck('id', 'name')->toArray();
 
-              
-            DB::transaction(function () use ($rows, $header, $statusMap, $sourceMap) {
-                foreach (array_chunk($rows, 500) as $chunk) {
-                    $insert = [];
+            // Validate required headers
+            $requiredHeaders = ['name', 'status'];
+            $missingHeaders = array_diff($requiredHeaders, $header);
 
-                    foreach ($chunk as $row) {
-                        $data = array_combine($header, $row);
+            if (! empty($missingHeaders)) {
+                return back()->withErrors([
+                    'file' => 'Missing required columns: ' . implode(', ', $missingHeaders) . '. Required columns: name, status. Optional columns: email, phone, whatsapp, town, source.',
+                ]);
+            }
 
-                        $insert[] = [
-                            'name'        => $data['name'],
-                            'email'       => $data['email'] ?? null,
-                            'phone'       => $data['phone'] ?? null,
-                            'whatsapp_number' => $data['whatsapp'] ?? null,
-                            'town'        => $data['town'] ?? null,
-                            'status_id'   => $statusMap[$data['status']] ?? $statusMap['new'],
-                            'source_id'   => $sourceMap[$data['source']] ?? null,
+            // Load existing statuses and sources (case-insensitive lookup)
+            $allStatuses = LeadStatus::all();
+            $allSources = LeadSource::all();
 
-                            'created_at'  => now(),
-                            'updated_at'  => now(),
-                        ];
-                        
+            // Create case-insensitive maps for lookup
+            $statusMap = [];
+            foreach ($allStatuses as $status) {
+                $statusMap[strtolower($status->name)] = $status->id;
+                $statusMap[$status->name] = $status->id; // Also keep original case
+            }
+
+            $sourceMap = [];
+            foreach ($allSources as $source) {
+                $sourceMap[strtolower($source->name)] = $source->id;
+                $sourceMap[$source->name] = $source->id; // Also keep original case
+            }
+
+            // Get default status (first status or 'New' if exists)
+            $defaultStatusId = $statusMap['New'] ?? $statusMap['new'] ?? ($statusMap ? reset($statusMap) : null);
+
+            if (! $defaultStatusId) {
+                // Create a default 'New' status if none exists
+                $defaultStatus = LeadStatus::firstOrCreate(['name' => 'New']);
+                $defaultStatusId = $defaultStatus->id;
+                $statusMap['new'] = $defaultStatusId;
+                $statusMap['New'] = $defaultStatusId;
+            }
+
+            $errors = [];
+            $insert = [];
+            $rowNumber = 2; // Start at 2 because header is row 1
+            $createdStatuses = [];
+            $createdSources = [];
+
+            DB::beginTransaction();
+
+            try {
+                foreach ($rows as $row) {
+                    // Skip empty rows
+                    if (empty(array_filter($row))) {
+                        $rowNumber++;
+
+                        continue;
                     }
 
+                    // Validate row has same number of columns as header
+                    if (count($row) !== count($header)) {
+                        $errors[] = "Row {$rowNumber}: Column count mismatch. Expected " . count($header) . ' columns, found ' . count($row) . '.';
+                        $rowNumber++;
 
-                   Lead::insert($insert);
+                        continue;
+                    }
+
+                    $data = array_combine($header, $row);
+
+                    if ($data === false) {
+                        $errors[] = "Row {$rowNumber}: Failed to map columns to header.";
+                        $rowNumber++;
+
+                        continue;
+                    }
+
+                    // Validate required fields
+                    if (empty(trim($data['name'] ?? ''))) {
+                        $errors[] = "Row {$rowNumber}: Name is required.";
+                        $rowNumber++;
+
+                        continue;
+                    }
+
+                    $statusName = trim($data['status'] ?? '');
+                    $statusId = null;
+
+                    if (! empty($statusName)) {
+                        // Try exact match first
+                        $statusId = $statusMap[$statusName] ?? null;
+
+                        // Try case-insensitive match
+                        if (! $statusId) {
+                            $statusId = $statusMap[strtolower($statusName)] ?? null;
+                        }
+
+                        // If still not found, check database case-insensitively before creating
+                        if (! $statusId) {
+                            $status = LeadStatus::whereRaw('LOWER(name) = ?', [strtolower($statusName)])->first();
+
+                            if (! $status) {
+                                $status = LeadStatus::create(['name' => $statusName]);
+                                $createdStatuses[] = $statusName;
+                            }
+
+                            $statusId = $status->id;
+                            $statusMap[$statusName] = $statusId;
+                            $statusMap[strtolower($statusName)] = $statusId;
+                        }
+                    } else {
+                        $statusId = $defaultStatusId;
+                    }
+
+                    $sourceId = null;
+                    if (! empty($data['source'] ?? '')) {
+                        $sourceName = trim($data['source']);
+
+                        // Try exact match first
+                        $sourceId = $sourceMap[$sourceName] ?? null;
+
+                        // Try case-insensitive match
+                        if (! $sourceId) {
+                            $sourceId = $sourceMap[strtolower($sourceName)] ?? null;
+                        }
+
+                        // If still not found, check database case-insensitively before creating
+                        if (! $sourceId) {
+                            $source = LeadSource::whereRaw('LOWER(name) = ?', [strtolower($sourceName)])->first();
+
+                            if (! $source) {
+                                $source = LeadSource::create(['name' => $sourceName]);
+                                $createdSources[] = $sourceName;
+                            }
+
+                            $sourceId = $source->id;
+                            $sourceMap[$sourceName] = $sourceId;
+                            $sourceMap[strtolower($sourceName)] = $sourceId;
+                        }
+                    }
+
+                    $insert[] = [
+                        'name' => trim($data['name']),
+                        'email' => ! empty($data['email'] ?? '') ? trim($data['email']) : null,
+                        'phone' => ! empty($data['phone'] ?? '') ? trim($data['phone']) : null,
+                        'whatsapp_number' => ! empty($data['whatsapp'] ?? '') ? trim($data['whatsapp']) : null,
+                        'town' => ! empty($data['town'] ?? '') ? trim($data['town']) : null,
+                        'status_id' => $statusId,
+                        'source_id' => $sourceId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    $rowNumber++;
                 }
-            });
-            return Inertia::flash([
-                'message' => 'Leads imported successfully!',
-                'type' => 'success',
-            ])->render('lead/index', [
-                'data' => Lead::with(['status', 'source'])->paginate(15),
-            ]);
+
+                // If there are critical errors (not missing statuses/sources), rollback and return
+                if (! empty($errors)) {
+                    DB::rollBack();
+
+                    return back()->withErrors([
+                        'file' => 'Validation errors found: ' . implode(' ', array_slice($errors, 0, 10)) . (count($errors) > 10 ? ' (and ' . (count($errors) - 10) . ' more errors)' : ''),
+                    ]);
+                }
+
+                // Insert in chunks
+                if (! empty($insert)) {
+                    foreach (array_chunk($insert, 500) as $chunk) {
+                        Lead::insert($chunk);
+                    }
+                } else {
+                    DB::rollBack();
+
+                    return back()->withErrors(['file' => 'No valid rows to import.']);
+                }
+
+                DB::commit();
+
+                // Build success message
+                $message = 'Leads imported successfully! ' . count($insert) . ' lead(s) imported.';
+                if (! empty($createdStatuses)) {
+                    $uniqueStatuses = array_unique($createdStatuses);
+                    $message .= ' Created ' . count($uniqueStatuses) . ' new status(es): ' . implode(', ', $uniqueStatuses) . '.';
+                }
+                if (! empty($createdSources)) {
+                    $uniqueSources = array_unique($createdSources);
+                    $message .= ' Created ' . count($uniqueSources) . ' new source(s): ' . implode(', ', $uniqueSources) . '.';
+                }
+
+                return redirect()->route('leads.index')->with('success', $message);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Throwable $e) {
-            dd($e);
-            // error response
-            return Inertia::flash([
-                'message' => 'Import failed: ' . $e->getMessage(),
-                'type' => 'error',
-            ])->render('lead/index', [
-            
-                'data' => Lead::with(['status', 'source'])->paginate(15),
+            return back()->withErrors([
+                'file' => 'Import failed: ' . $e->getMessage() . ' (Line: ' . ($e->getLine() ?? 'unknown') . ')',
             ]);
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+
+        $lead_statuses = LeadStatus::all();
+        $lead_sources = LeadSource::all();
+
+        return Inertia::render('lead/create', [
+            'lead_statuses' => $lead_statuses,
+            'lead_sources' => $lead_sources,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'whatsapp_number' => ['nullable', 'string', 'max:20'],
+            'status_id' => ['required', 'exists:lead_statuses,id'],
+            'source_id' => ['nullable', 'exists:lead_sources,id'],
+            'town' => ['nullable', 'string', 'max:100'],
+            'lead_notes' => ['nullable', 'string', 'max:255'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        Lead::create($validated);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('leads.index')->with('success', 'Lead created successfully');
     }
 }

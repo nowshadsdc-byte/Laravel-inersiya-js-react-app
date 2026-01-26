@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'status_id',
+        'source_id',
+        'assigned_to',
+        'whatsapp_number',
+        'address',
+        'town',
+
+    ];
     public function status()
     {
         return $this->belongsTo(LeadStatus::class);

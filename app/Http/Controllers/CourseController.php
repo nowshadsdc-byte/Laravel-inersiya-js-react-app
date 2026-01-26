@@ -75,7 +75,7 @@ class CourseController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'course_code' => ['required', 'string'],
+            'course_code' => ['nullable', 'string', 'unique:courses,course_code,'.$id->id],
             'description' => ['nullable', 'string'],
         ]);
 
