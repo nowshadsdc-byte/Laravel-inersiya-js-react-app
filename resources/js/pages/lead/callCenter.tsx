@@ -1,58 +1,90 @@
+import AppLayout from '@/layouts/app-layout'
+import { dashboard } from '@/routes'
+import { type BreadcrumbItem } from '@/types'
+import { Head } from '@inertiajs/react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { CallCenterOne } from '@/components/callCenterOne'
 
-import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
-import { User, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-
-import { Lead, leads, LeadSource, LeadStatus } from '@/lib/data';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Lead Dashboard',
-        href: dashboard().url,
-    },
-];
+  {
+    title: 'Call Center',
+    href: dashboard().url,
+  },
+]
 
+const mockLeads = [
+  { id: 1, name: 'Rahim Ahmed', phone: '017xxxxxxx' },
+  { id: 2, name: 'Karim Khan', phone: '018xxxxxxx' },
+  { id: 3, name: 'Sadia Islam', phone: '019xxxxxxx' },
+]
 
+export default function Callcenter({ leads }: { leads?: any }) {
+    const {data } = leads || {};
+    const leadList = data || [];
+    console.log('Lead List:', leadList);
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Call Center Dashboard" />
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+          {/* Column 1: New Leads */}
+            <CallCenterOne leadList={leadList} />
+          {/* Column 2: Call Today */}
+          <Card className="h-[75vh] flex flex-col">
+            <CardHeader>
+              <CardTitle>Call Today</CardTitle>
+            </CardHeader>
 
-export default function Callcenter({ leads }: { leads: Lead[] }) {
-    const [page, setPage] = useState(1);
-    const [leadData, setLeadData] = useState<Lead[]>(leads);
-
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Lead Dashboard" />
-            <Button
-                disabled={!leads.links.find(l => l.label.includes('Next'))?.url}
-                onClick={() =>
-                    router.get(
-                        leads.links.find(l => l.label.includes('Next')).url,
-                        {},
-                        { preserveState: true, replace: true }
-                    )
-                }
-            >
-                Next
-            </Button>
-            <div className='w-[100%] flex items-center justify-between'>
-                <div className='grey-box w-[30%] h-[500px] flex flex-col'>
-                    <div className="commum border-1 border-b-cyan-200 w-full m-1 h-full">
-                        <div className='cart'>
-                            <Button onClick={() => setPage(page + 1)}>next</Button>
-                            {leadData.data.map((lead) => (
-                                <div key={lead.id} className="commum  m-5 border-1 border-b-cyan-200 w-full m-1 h-full flex flex-col items-center justify-center">
-                                    <p>{lead.id}</p>
-                                    <h3>{lead.name}</h3>
-                                    <p>{lead.email}</p>
-                                    <p>{lead.phone}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
+            <CardContent className="flex-1 overflow-y-auto space-y-3">
+              {mockLeads.map(lead => (
+                <div
+                  key={lead.id}
+                  className="rounded-lg border p-3"
+                >
+                  <p className="font-medium">{lead.name}</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Follow-up scheduled today
+                  </p>
+                  <div className="flex gap-2">
+                    <Button size="sm">Call</Button>
+                    <Button size="sm" variant="outline">Done</Button>
+                  </div>
                 </div>
-            </div>
-        </AppLayout>
-    );
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Column 3: Search / Manual Call */}
+          <Card className="h-[75vh] flex flex-col">
+            <CardHeader>
+              <CardTitle>Search Leads</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <Input placeholder="Search by name or phone..." />
+
+              <div className="space-y-3 overflow-y-auto">
+                {mockLeads.map(lead => (
+                  <div
+                    key={lead.id}
+                    className="rounded-lg border p-3 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-medium">{lead.name}</p>
+                      <p className="text-sm text-muted-foreground">{lead.phone}</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      Call
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </AppLayout>
+  )
 }
