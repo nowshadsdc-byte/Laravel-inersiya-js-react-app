@@ -1,5 +1,6 @@
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 
 export default function CallToday({ leadsdata }: { leadsdata?: { id: string | number; name: string; profile?: { interest?: string }; notes?: { note: string }[] }[] }) {
 
@@ -10,6 +11,10 @@ export default function CallToday({ leadsdata }: { leadsdata?: { id: string | nu
             <Card className="h-[150vh] flex flex-col">
                 <CardHeader>
                     <CardTitle>Follow-up scheduled today</CardTitle>
+                  <div className="flex gap-1">
+                      <Input placeholder="Search leads..." />
+                    <Input type="Date"></Input>
+                  </div>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto space-y-3">
                     {leadsdata?.map(lead => (
