@@ -20,17 +20,16 @@ const mockLeads = [
   { id: 3, name: 'Sadia Islam', phone: '019xxxxxxx' },
 ]
 
-export default function Callcenter({ leads }: { leads?: any }) {
+export default function Callcenter({ leads, sources,total }: { leads?: any, sources?: any, total?: number }) {
     const {data } = leads || {};
     const leadList = data || [];
-    console.log('Lead List:', leadList);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Call Center Dashboard" />
       <div className="">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           {/* Column 1: New Leads */}
-            <CallCenterOne leadList={leadList} />
+            <CallCenterOne leadList={leadList} sources={sources} paginateData={leads} total={total} />
           {/* Column 2: Call Today */}
           <Card className="h-[75vh] flex flex-col">
             <CardHeader>

@@ -338,8 +338,12 @@ class LeadController extends Controller
     public function callCenter()
     {
      $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->latest()->paginate(10);
+     $total = Lead::count();
+     $sources = LeadSource::all();
         return Inertia::render('lead/callCenter', [
             'leads' => $data,
+            'sources' => $sources,
+            'total' => $total,
         ]);
     }
 }
