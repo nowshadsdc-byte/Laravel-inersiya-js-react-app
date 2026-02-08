@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CallCenterOne } from '@/components/callCenterOne'
 import CallToday from '@/components/CallToday'
+import { LeadViewDialog } from '@/components/LeadViewDialog'
 
 const breadcrumbs: BreadcrumbItem[] = [
   {

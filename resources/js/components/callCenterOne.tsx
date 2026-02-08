@@ -27,6 +27,7 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
 
     // Inertia pagination data
     const { props } = usePage<{ leads?: { current_page?: number; last_page?: number } }>();
+    
     const pagination = props.leads as { current_page?: number; last_page?: number } | undefined;
 
     const currentPage = pagination?.current_page || 1;
