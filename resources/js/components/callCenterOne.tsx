@@ -4,6 +4,8 @@ import { Input } from "./ui/input";
 
 export function CallCenterOne({ leadList }: { leadList: any[] }) {
 
+         
+
     return (
         <div className="">
             {/* Column 1: New Leads */}
