@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
+use App\Models\LeadCall;
 use App\Models\LeadProfile;
 use App\Models\LeadSource;
 use App\Models\LeadStatus;
 use App\Models\User;
+use App\Models\LeadNote;
+use App\Models\LeadReminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\In;
@@ -131,7 +134,6 @@ class LeadController extends Controller
                     // Skip empty rows
                     if (empty(array_filter($row))) {
                         $rowNumber++;
-
                         continue;
                     }
 
@@ -340,13 +342,65 @@ class LeadController extends Controller
         $data = Lead::with(['status', 'source', 'notes', 'calls', 'reminders', 'profile'])->latest()->paginate(30);
         $total = Lead::count();
         $sources = LeadSource::all();
-      
-
+        $leadReminders = LeadReminder::with('lead')->get();
+        
         return Inertia::render('lead/callCenter', [
             'leads' => $data,
             'sources' => $sources,
             'total' => $total,
-    
+            'leadReminders' => $leadReminders,
         ]);
+    }
+    public function callupdate(Request $request,$id){
+       
+        $request->validate([
+            'type' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'called_at' => ['nullable', 'date'],
+            'result' => ['nullable', 'string', 'max:255'],
+            'remarks' => ['nullable', 'string', 'max:255'],
+            'remind_at' => ['nullable', 'date'],
+            'is_completed' => ['nullable', 'boolean'],
+            'note' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $lead = Lead::where('id', $id)->first();
+
+        if($request->type === 'call'){
+            LeadCall::create([
+                'lead_id' => $lead->id,
+                'user_id' => auth()->user()->id,
+                'called_at' => $request->called_at,
+                'result' => $request->result,
+                'remarks' => $request->remarks,
+            ]);
+        }
+
+        if($request->type === 'note'){
+            LeadNote::create([
+                'lead_id' => $lead->id,
+                'note' => $request->note,
+                'user_id' => auth()->user()->id,
+            ]);
+        }
+        if($request->type === 'status_change'){
+            $lead = Lead::where('id', $id)->first();
+            $status = LeadStatus::where('name', $request->status_change)->first();  
+            if($status){
+                $lead->status_id = $status->id;
+                $lead->save();
+                return redirect()->route('leads.call-center')->with('success', 'Status changed successfully');
+            }
+            return redirect()->route('leads.call-center')->with('error', 'Status not found');
+        }
+        if($request->type === 'reminder'){
+            LeadReminder::create([
+                'lead_id' => $lead->id,
+                'user_id' => auth()->user()->id,
+                'remind_at' => $request->remind_at,
+                'is_completed' => $request->is_completed,
+            ]);
+        }
+        return redirect()->route('leads.call-center')->with('success', 'Call updated successfully');
     }
 }

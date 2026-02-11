@@ -83,6 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/leads/edit/{id}', [LeadController::class, 'update'])->name('leads.update');
     Route::delete('/leads/delete/{id}', [LeadController::class, 'destroy'])->name('leads.delete');
     Route::get('/leads/call-center', [LeadController::class, 'callCenter'])->name('leads.call-center');
+    Route::post('/leads/call-center/{id}',[LeadController::class, 'callupdate'])->name('leads.callupdate');
 
 });
 

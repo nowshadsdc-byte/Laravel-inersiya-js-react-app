@@ -17,15 +17,11 @@ const breadcrumbs: BreadcrumbItem[] = [
   
 ]
 
-const mockLeads = [
-  { id: 1, name: 'Rahim Ahmed', phone: '017xxxxxxx' },
-  { id: 2, name: 'Karim Khan', phone: '018xxxxxxx' },
-  { id: 3, name: 'Sadia Islam', phone: '019xxxxxxx' },
-]
-
-export default function Callcenter({ leads, sources,total ,reminders}: { leads?: any, sources?: any, total?: number,reminders?:any }) {
+export default function Callcenter({ leads, sources,total ,leadReminders}: { leads?: any, sources?: any, total?: number,leadReminders?:any }) {
     const {data } = leads || {};
     const leadList = data || [];
+    const leadRemindersList = leadReminders || [];
+   
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Call Center Dashboard" />
@@ -34,7 +30,7 @@ export default function Callcenter({ leads, sources,total ,reminders}: { leads?:
           {/* Column 1: New Leads */}
           <CallCenterOne leadList={leadList} sources={sources} total={total ?? 0} />
           {/* Column 2: Call Today */}
-          <CallToday leadsdata={leadList} />
+          <CallToday leadRemindersdata={leadRemindersList} />
         </div>
       </div>
     </AppLayout>

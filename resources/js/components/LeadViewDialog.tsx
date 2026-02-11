@@ -30,7 +30,6 @@ export function LeadViewDialog({ open, onOpenChange, lead }: Props) {
             <TabsTrigger value="notes">Notes</TabsTrigger>
             <TabsTrigger value="calls">Calls</TabsTrigger>
             <TabsTrigger value="reminders">Reminders</TabsTrigger>
-           <TabsTrigger value="CallNow">Call Now</TabsTrigger>
           </TabsList>
 
           {/* ---------------- DETAILS TAB ---------------- */}
@@ -83,9 +82,6 @@ export function LeadViewDialog({ open, onOpenChange, lead }: Props) {
           {/* ---------------- NOTES TAB ---------------- */}
 
           <TabsContent value="notes" className="mt-4 space-y-3">
-            <Textarea>
-
-            </Textarea>
             {lead.notes?.length ? (
               lead.notes.map((note: any) => (
                 <Textarea
@@ -121,10 +117,6 @@ export function LeadViewDialog({ open, onOpenChange, lead }: Props) {
                 No reminders scheduled.
               </p>
             )}
-          </TabsContent>
-          <TabsContent value="CallNow" className="mt-4">
-            <p>Lorem ipsum dolor sit.</p>
-
           </TabsContent>
         </Tabs>
       </DialogContent>

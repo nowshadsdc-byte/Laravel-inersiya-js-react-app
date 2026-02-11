@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadReminder extends Model
 {
-    protected $fillable = ['lead_id', 'reminder_date', 'reminder_time', 'reminder_type', 'reminder_message'];
+    protected $fillable = ['lead_id','user_id','remind_at','is_completed'];
     public function lead()
     {
         return $this->belongsTo(Lead::class);

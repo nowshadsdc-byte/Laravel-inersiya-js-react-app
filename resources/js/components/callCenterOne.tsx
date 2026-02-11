@@ -3,6 +3,8 @@ import { router, usePage } from "@inertiajs/react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
+import { LeadViewDialog } from "./LeadViewDialog";
+import { CallNow } from "./CallNow";
 
 type Source = {
     id: number | string;
@@ -25,9 +27,19 @@ interface CallCenterOneProps {
 export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) {
     const data = leadList;
 
+    //dailog 
+
+    const [open, setOpen] = useState(false)
+    const [selectedLead, setSelectedLead] = useState<any>(null)
+
+    //callNow
+    const [callOpen,setCallOpen] =useState(false)
+    const [selectCall , setCallNow] =useState<Lead | null>(null)
+
+
     // Inertia pagination data
     const { props } = usePage<{ leads?: { current_page?: number; last_page?: number } }>();
-    
+
     const pagination = props.leads as { current_page?: number; last_page?: number } | undefined;
 
     const currentPage = pagination?.current_page || 1;
@@ -78,6 +90,13 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
 
     return (
         <div className="h-[150vh] ">
+            <LeadViewDialog
+                open={open}
+                onOpenChange={setOpen}
+                lead={selectedLead}
+            />
+
+            <CallNow open={callOpen} onOpenChange={setCallOpen} lead={selectCall}/>
             <Card className="h-[150vh] flex flex-col">
                 {/* Header */}
                 <CardHeader>
@@ -121,9 +140,20 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
                                 <span className="text-sm">{lead.name}</span>
                                 <span className="text-sm">{lead.phone}</span>
                             </div>
-                            <Button size="sm" variant="outline">
+                           <div className="">
+                             <Button className="mx-2" size="sm" variant="outline" onClick={() => {
+                                setSelectedLead(lead)
+                                setOpen(true)
+                            }}>
                                 View
                             </Button>
+                             <Button size="sm" variant="outline" onClick={() => {
+                                setCallNow(lead)
+                                setCallOpen(true)
+                            }}>
+                                Call Now
+                            </Button>
+                           </div>
                         </div>
                     ))}
                 </CardContent>
