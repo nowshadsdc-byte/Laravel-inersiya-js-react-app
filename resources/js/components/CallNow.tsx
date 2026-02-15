@@ -49,7 +49,12 @@ export function CallNow({ open, onOpenChange, lead }: Props) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault()
-        post(`/leads/call-center/${lead.id}`)
+        post(`/leads/call-center/${lead.id}`, {
+            onSuccess: () => {
+                reset()               // optional: clear the form
+                onOpenChange(false)   // close the dialog
+            },
+        })
     }
 
     return (
@@ -141,7 +146,7 @@ export function CallNow({ open, onOpenChange, lead }: Props) {
                             {/* REMINDER FIELD */}
                             {data.type === "reminder" && (
                                 <>
-                                    
+
                                     <input
                                         type="datetime-local"
                                         className="w-full border rounded p-2"
@@ -151,10 +156,10 @@ export function CallNow({ open, onOpenChange, lead }: Props) {
                                     <textarea
                                         placeholder="Remarks"
                                         className="w-full border rounded p-2"
-                                        value={data.description }
+                                        value={data.description}
                                         onChange={(e) => setData("description", e.target.value)}
                                     />
-                                    
+
                                 </>
                             )}
 
