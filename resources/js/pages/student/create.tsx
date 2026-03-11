@@ -184,7 +184,7 @@ export default function CreateStudent({ batchs, courses }: Props) {
                             <option value="">-- Select Batch --</option>
                             {batchs.map((batch) => (
                                 <option key={batch.id} value={batch.id.toString()}>
-                                    {batch.name}
+                                    {batch.name} -- {batch.course_id && courses.find(c => c.id === batch.course_id)?.name}
                                 </option>
                             ))}
                         </select>

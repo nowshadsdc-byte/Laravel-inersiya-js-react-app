@@ -25,7 +25,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = Role::all();
+        return Inertia::render('user/create', [
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -33,7 +36,28 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'roles' => 'array',
+            'roles.*' => 'exists:roles,id',
+        ]);
+
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password']),
+            'role_id' => $request['roles'] ?? null
+        ]);
+
+        // Assign roles to the user
+        if (isset($request['roles'])) {
+            $user->roles()->sync($request['roles']);
+        }
+
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
+
     }
 
     /**

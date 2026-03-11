@@ -15,13 +15,45 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         $permissions = [
-            'view students',
-            'create students',
-            'edit students',
-            'delete students',
-            'view courses',
-            'manage courses',
-            'manage batches',
+            'view_students',
+            'create_students',
+            'edit_students',
+            'delete_students',
+
+            'view_courses',
+            'create_courses',
+            'edit_courses',
+            'delete_courses',
+
+            'view_batches',
+            'create_batches',
+            'edit_batches',
+            'delete_batches',
+      
+            'view_users',
+            'create_users',
+            'edit_users',
+            'delete_users',
+
+            'view_roles',
+            'create_roles',
+            'edit_roles',
+            'delete_roles',
+
+            'view_permissions',
+            'create_permissions',
+            'edit_permissions',
+            'delete_permissions',
+
+            'view_leads',
+            'create_leads',
+            'edit_leads',
+            'delete_leads',
+
+            'view_billing',
+            'create_billing',
+            'edit_billing',
+            'delete_billing',
         ];
 
         foreach ($permissions as $permission) {
@@ -38,27 +70,32 @@ class RolePermissionSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         $user->givePermissionTo([
-            'view students',
-            'view courses',
-            'manage batches',
+            'view_students',
+            'view_courses',
+            'view_batches',
         ]);
 
         $student->givePermissionTo([
-            'view courses',
+            'view_students',
+            'view_courses',
+            'view_batches',
         ]);
         $teacher->givePermissionTo([
-            'view students',
-            'view courses',
+            'view_students',
+            'view_courses',
+            'view_batches',
         ]);
         $accounts->givePermissionTo([
-            'view students',
-            'view courses',
+            'view_students',
+            'view_courses',
+            'view_batches',
         ]);
         $editor->givePermissionTo([
-            'view students',
-            'create students',
-            'edit students',
-            'view courses',
+            'view_students',
+            'create_students',
+            'edit_students',
+            'view_courses',
+            'view_batches',
         ]);
     }
 }

@@ -31,7 +31,7 @@ const sidebarNavItems: NavItem[] = [
         title: 'Appearance',
         href: editAppearance(),
         icon: null,
-    },
+    }
 
 ];
 

@@ -24,9 +24,34 @@ return new class extends Migration
             $table->dateTime('called_at');
             $table->enum('result', [
                 'answered',
-                'missed',
+                'no_answer',
                 'busy',
-                'not_reachable'
+                'missed',
+                'unavailable',
+                'not_reachable',
+
+                'interested',
+                'not_interested',
+                'maybe_interested',
+
+                'call_back_later',
+                'follow_up_required',
+                'meeting_scheduled',
+
+                'qualified',
+                'not_qualified',
+
+                'proposal_sent',
+                'negotiation',
+
+                'converted',
+                'won',
+                'lost',
+
+                'wrong_person',
+                'invalid_number',
+                'duplicate_lead',
+                'rejected'
             ]);
 
             $table->text('remarks')->nullable();

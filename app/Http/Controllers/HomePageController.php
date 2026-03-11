@@ -6,6 +6,7 @@ class HomePageController extends Controller
 {
     public function index()
     {
-        return Inertia::render('welcome');
+        $app_name = env('APP_NAME', 'Certificate Verification System');
+        return Inertia::render('welcome', ['app_name' => $app_name]);
     }
 }

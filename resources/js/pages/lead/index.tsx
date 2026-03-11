@@ -23,7 +23,7 @@ export default function Index({leads ,users ,lead_statuses,leadSources ,leadStat
             <Head title="Lead Dashboard" />
             <div className='w-[100%] flex items-center justify-between'>
                 
-                <Button onClick={() => router.get('/leads/upload')} className='w-3/12 my-2 mx-2'>Today Task</Button>
+                <Button onClick={() => router.get('/')} className='w-3/12 my-2 mx-2'>Activities</Button>
                 <Button onClick={() => router.get('/leads/call-center')} className='w-3/12 my-2 mx-2'>Call Center</Button>
                 <Button onClick={() => router.get('/leads/upload')} className='w-3/12 my-2 mx-2'>Add Lead</Button>
 

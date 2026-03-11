@@ -67,6 +67,7 @@ import {
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Lead, LeadSource, LeadStatus, User } from "@/types/Leads"
+import { router } from "@inertiajs/react"
 type SortDirection = "asc" | "desc" | null
 type SortField = "id" | "name" | "email" | "town" | "status" | "source" | "assignedUser" | "occupation" | "company" | "interest" | "created_at" | "updated_at"
 
@@ -139,16 +140,16 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
   const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
     id: true,
     name: true,
-    email: true,
+    email: false,
     phone: true,
     whatsapp: false,
     status: true,
-    source: true,
-    assignedTo: true,
+    source: false,
+    assignedTo: false,
     town: true,
     address: false,
     occupation: true,
-    company: true,
+    company: false,
     interest: false,
     createdAt: true,
     updatedAt: false,
@@ -426,6 +427,14 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
     a.download = `leads-export-${format(new Date(), "yyyy-MM-dd")}.csv`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this lead?")) {
+      // Call API to delete lead
+      router.delete(`/leads/delete/${id}`)
+
+    }
   }
 
   return (
@@ -1317,6 +1326,12 @@ export function LeadsTable({ leadsdata, users, lead_statuses, leadSources, leadS
                                 <p className="text-muted-foreground">No reminders for this lead.</p>
                               )}
                             </TabsContent>
+                            <Button variant="outline" onClick={() => setSelectedRows([lead.id])}>
+                              Edit Lead
+                            </Button>
+                            <Button variant="outline" onClick={() => handleDelete(lead.id)} className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white">
+                              Delete Lead
+                            </Button>
                           </Tabs>
                         </DialogContent>
                       </Dialog>
