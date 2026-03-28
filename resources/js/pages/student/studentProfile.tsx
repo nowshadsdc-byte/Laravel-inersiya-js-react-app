@@ -29,7 +29,10 @@ export default function Index(studentData: PageProps) {
                 >
                     Edit Profile
                 </Button>
-                <PdfButton href={`/student/pdf/${id}`} label="Download Student Profile"></PdfButton>
+                <PdfButton
+                    href={`/student/pdf/${id}`}
+                    label="Download Student Profile"
+                ></PdfButton>
                 <RenderAny data={studentData as unknown as any} />
             </div>
         </AppLayout>

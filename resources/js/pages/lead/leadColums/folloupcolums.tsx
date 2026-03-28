@@ -11,11 +11,11 @@ export const followUpColumns: columns<Lead>[] = [
     {
         accessorKey: 'lead.name',
         header: 'Name',
-    }, {
+    },
+    {
         accessorKey: 'lead.phone',
         header: 'Phone',
-    }
-    ,
+    },
     {
         accessorKey: 'remind_at',
         header: 'Remind At',
@@ -30,11 +30,11 @@ export const followUpColumns: columns<Lead>[] = [
                 remindAt.getDate() === today.getDate();
 
             return (
-                <span className={isToday ? 'text-red-600 font-semibold' : ''}>
+                <span className={isToday ? 'font-semibold text-red-600' : ''}>
                     {remindAt.toLocaleDateString()}
                 </span>
             );
-        }
+        },
     },
     {
         accessorKey: 'is_completed',
@@ -43,8 +43,11 @@ export const followUpColumns: columns<Lead>[] = [
             const isCompleted = row.original.is_completed;
             return (
                 <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${isCompleted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                        }`}
+                    className={`rounded-full px-2 py-1 text-xs font-medium ${
+                        isCompleted
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                    }`}
                 >
                     {isCompleted ? 'Completed' : 'Pending'}
                 </span>
@@ -57,7 +60,15 @@ export const followUpColumns: columns<Lead>[] = [
         cell: ({ row }) => {
             return (
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => router.get(`/leads/call-now/${row.original.lead.id}`)}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                            router.get(
+                                `/leads/call-now/${row.original.lead.id}`,
+                            )
+                        }
+                    >
                         <PhoneForwardedIcon className="h-4 w-4" />
                     </Button>
                 </div>

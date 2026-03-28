@@ -23,7 +23,6 @@ import {
     UsersRound,
 } from 'lucide-react';
 import AppLogo from './app-logo';
-import Can from './ui/can';
 
 const mainNavItems: NavItem[] = [
     {
@@ -100,7 +99,6 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
             <SidebarFooter>
-
                 <NavFooter items={footerNavItems} className="mt-auto" />
 
                 <NavUser />

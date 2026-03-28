@@ -5,9 +5,9 @@ import { Button } from './ui/button';
 
 export function AppSidebarHeader({
     breadcrumbs = [],
-    backButton ,
+    backButton,
 }: {
-    breadcrumbs?: BreadcrumbItemType[]; 
+    breadcrumbs?: BreadcrumbItemType[];
     backButton?: boolean;
 }) {
     return (
@@ -17,9 +17,13 @@ export function AppSidebarHeader({
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
                 <div className="ml-auto flex gap-2">
                     {backButton && (
-                          <Button variant="outline" size="sm" onClick={(e)=>window.history.back()}>
-                        Back
-                    </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => window.history.back()}
+                        >
+                            Back
+                        </Button>
                     )}
                 </div>
             </div>

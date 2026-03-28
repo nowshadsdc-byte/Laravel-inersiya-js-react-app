@@ -59,7 +59,6 @@ import {
     Columns,
     Download,
     Eye,
-    EyeIcon,
     Filter,
     Mail,
     MessageSquare,
@@ -1800,7 +1799,7 @@ export function LeadsTable({
                                                         <Eye className="h-4 w-4" />
                                                     </Button>
                                                 </DialogTrigger>
-                                                
+
                                                 <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto">
                                                     <DialogHeader>
                                                         <DialogTitle>
@@ -2219,7 +2218,15 @@ export function LeadsTable({
                                                     </Tabs>
                                                 </DialogContent>
                                             </Dialog>
-                                            <Button variant="outline" size="sm" onClick={() => router.get(`/leads/call-now/${lead.id}`)}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    router.get(
+                                                        `/leads/call-now/${lead.id}`,
+                                                    )
+                                                }
+                                            >
                                                 <PhoneForwarded className="h-4 w-4" />
                                             </Button>
                                         </TableCell>

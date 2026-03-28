@@ -13,11 +13,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function FollowUpScheduled({ leads }: { leads: any[] }) {
-   
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Follow-Up Scheduled" />
-            <DataTable columns={followUpColumns} data={leads} searchKey="name"></DataTable>
+            <DataTable
+                columns={followUpColumns}
+                data={leads}
+                searchKey="name"
+            ></DataTable>
         </AppLayout>
     );
 }

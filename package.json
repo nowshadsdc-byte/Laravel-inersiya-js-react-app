@@ -20,6 +20,8 @@
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-react": "^7.37.3",
         "eslint-plugin-react-hooks": "^7.0.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.4.0",
         "prettier": "^3.4.2",
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-tailwindcss": "^0.6.11",
@@ -72,6 +74,11 @@
         "vite": "^7.0.4",
         "ziggy-js": "^2.6.0",
         "zod": "^4.2.1"
+    },
+    "lint-staged": {
+        "resources/**/*.{js,ts,tsx}": [
+        "prettier --write"
+    ]
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5",

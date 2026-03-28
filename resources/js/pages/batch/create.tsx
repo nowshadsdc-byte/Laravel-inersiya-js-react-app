@@ -158,7 +158,7 @@ export default function Create({
                                 <option value="active">Active</option>
                                 <option value="completed">Completed</option>
                                 <option value="archived">Upcoming</option>
-                            </select>   
+                            </select>
                         </div>
                         <Button
                             disabled={processing}

@@ -94,8 +94,6 @@ export function CallCenterOne({
         return Array.from({ length: totalPages }, (_, i) => i + 1);
     }, [totalPages]);
 
-         
-
     return (
         <div className="h-[150vh]">
             <LeadViewDialog

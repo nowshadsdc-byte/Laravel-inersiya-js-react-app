@@ -64,14 +64,18 @@ export default function Update({ batch, courses, error }: Props) {
                                 <select
                                     value={data[field] ?? ''}
                                     onChange={(e) => {
-                                        setData((prev: Record<string, any>) => ({
-                                            ...prev,
-                                            [field]: e.target.value,
-                                        }));
+                                        setData(
+                                            (prev: Record<string, any>) => ({
+                                                ...prev,
+                                                [field]: e.target.value,
+                                            }),
+                                        );
                                     }}
                                     className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
                                 >
-                                    <option value={`${data[field] ?? ''}`}>{data[field] ?? ''}</option>
+                                    <option value={`${data[field] ?? ''}`}>
+                                        {data[field] ?? ''}
+                                    </option>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                     <option value="completed">Completed</option>
@@ -83,8 +87,8 @@ export default function Update({ batch, courses, error }: Props) {
                                         field.includes('date')
                                             ? 'date'
                                             : field === 'TotalClass'
-                                                ? 'number'
-                                                : 'text'
+                                              ? 'number'
+                                              : 'text'
                                     }
                                     value={data[field] ?? ''}
                                     onChange={(e) => {
@@ -93,10 +97,12 @@ export default function Update({ batch, courses, error }: Props) {
                                                 ? Number(e.target.value)
                                                 : e.target.value;
 
-                                        setData((prev: Record<string, any>) => ({
-                                            ...prev,
-                                            [field]: value,
-                                        }));
+                                        setData(
+                                            (prev: Record<string, any>) => ({
+                                                ...prev,
+                                                [field]: value,
+                                            }),
+                                        );
                                     }}
                                     className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm"
                                 />
@@ -136,7 +142,6 @@ export default function Update({ batch, courses, error }: Props) {
                             </p>
                         )}
                     </div>
-
 
                     <div className="pt-4">
                         <button

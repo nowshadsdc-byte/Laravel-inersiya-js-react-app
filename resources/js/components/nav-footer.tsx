@@ -9,7 +9,6 @@ import {
 import { resolveUrl } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { type ComponentPropsWithoutRef } from 'react';
-import Can from './ui/can';
 
 export function NavFooter({
     items,
@@ -25,7 +24,6 @@ export function NavFooter({
         >
             <SidebarGroupContent>
                 <SidebarMenu>
-
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton

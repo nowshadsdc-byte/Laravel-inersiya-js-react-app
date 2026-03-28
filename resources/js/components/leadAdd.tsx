@@ -1,10 +1,10 @@
 import { LeadSource } from '@/lib/data';
 import { LeadStatus, User } from '@/types/Lead';
 import { useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { useState } from 'react';
 
 export default function AddLead({
     leadSources,
@@ -52,10 +52,10 @@ export default function AddLead({
 
     const handleSearch = (query: string) => {
         const filteredInterests = interests.filter((interest) =>
-            interest.toLowerCase().includes(query.toLowerCase())
+            interest.toLowerCase().includes(query.toLowerCase()),
         );
         setFilteredInterests(filteredInterests);
-    }
+    };
 
     return (
         <>
@@ -142,10 +142,7 @@ export default function AddLead({
                         >
                             <option value="">Select Status</option>
                             {leadStatuses.map((status) => (
-                                <option
-                                    key={status.id}
-                                    value={status.id}
-                                >
+                                <option key={status.id} value={status.id}>
                                     {status.name}
                                 </option>
                             ))}
@@ -273,11 +270,11 @@ export default function AddLead({
                             />
 
                             {filteredInterests.length > 0 && (
-                                <div className="absolute z-50 w-full bottom-full mb-1 max-h-48 overflow-y-auto rounded-md border bg-white shadow-lg">
+                                <div className="absolute bottom-full z-50 mb-1 max-h-48 w-full overflow-y-auto rounded-md border bg-white shadow-lg">
                                     {filteredInterests.map((item, index) => (
                                         <div
                                             key={index}
-                                            className="px-3 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+                                            className="cursor-pointer px-3 py-2 text-sm hover:bg-gray-100"
                                             onClick={() => {
                                                 setData('interest', item);
                                                 setFilteredInterests([]);
@@ -289,7 +286,6 @@ export default function AddLead({
                                 </div>
                             )}
                         </div>
-
                     </div>
                     <div>
                         <Label htmlFor="company">Company</Label>

@@ -24,7 +24,6 @@ export default function Index({
     lead_statuses: LeadStatus[];
     leadSources: LeadSource[];
     leadStatus: LeadStatus[];
-    
 }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -42,7 +41,7 @@ export default function Index({
                 >
                     Follow-up Scheduled
                 </Button> */}
-                <Button onClick={()=>router.get('/lead/FollowUp')}>
+                <Button onClick={() => router.get('/lead/FollowUp')}>
                     Follow Up Lead
                 </Button>
                 <Button
@@ -60,7 +59,6 @@ export default function Index({
                     lead_statuses={lead_statuses}
                     leadSources={leadSources}
                     leadStatus={leadStatus[0]}
-                   
                 ></LeadsTable>
             </div>
         </AppLayout>

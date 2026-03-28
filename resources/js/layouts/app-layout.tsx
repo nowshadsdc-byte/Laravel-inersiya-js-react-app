@@ -8,8 +8,17 @@ interface AppLayoutProps {
     backButton?: boolean;
 }
 
-export default ({ children, breadcrumbs, backButton, ...props }: AppLayoutProps) => (
-    <AppLayoutTemplate breadcrumbs={breadcrumbs} backButton={backButton} {...props}>
+export default ({
+    children,
+    breadcrumbs,
+    backButton,
+    ...props
+}: AppLayoutProps) => (
+    <AppLayoutTemplate
+        breadcrumbs={breadcrumbs}
+        backButton={backButton}
+        {...props}
+    >
         {children}
     </AppLayoutTemplate>
 );
