@@ -24,7 +24,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: laracrafr_test
+          MYSQL_DATABASE: laracraft_test
           MYSQL_USER: laravel
           MYSQL_PASSWORD: secret
         ports:
@@ -43,9 +43,9 @@ jobs:
       SESSION_DRIVER: array
       QUEUE_CONNECTION: sync
       DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
+      DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: laracrafr_test
+      DB_DATABASE: laracraft_test
       DB_USERNAME: laravel
       DB_PASSWORD: secret
 
@@ -110,13 +110,19 @@ jobs:
     needs: ci
     if: >-
       github.event_name == 'push' &&
-      (github.ref_name == 'main' || github.ref_name == 'production') &&
-      secrets.SSH_HOST != '' &&
-      secrets.SSH_USERNAME != '' &&
-      secrets.SSH_PRIVATE_KEY != '' &&
-      secrets.DEPLOY_PATH != ''
+      (github.ref_name == 'main' || github.ref_name == 'production')
 
     steps:
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ] || \
+             [ -z "${{ secrets.SSH_USERNAME }}" ] || \
+             [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ] || \
+             [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
+            echo "❌ Required secrets are missing"
+            exit 1
+          fi
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
