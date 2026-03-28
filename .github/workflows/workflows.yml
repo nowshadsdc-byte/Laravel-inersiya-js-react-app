@@ -1,6 +1,6 @@
 name: CI/CD Pipeline
 
-on:
+'on':
   pull_request:
     branches:
       - main
@@ -9,6 +9,9 @@ on:
     branches:
       - main
       - production
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,7 +27,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: laracraft_test
+          MYSQL_DATABASE: laracrafr_test
           MYSQL_USER: laravel
           MYSQL_PASSWORD: secret
         ports:
@@ -36,6 +39,7 @@ jobs:
           --health-retries=5
 
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       APP_ENV: testing
       APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
       APP_DEBUG: true
@@ -43,32 +47,33 @@ jobs:
       SESSION_DRIVER: array
       QUEUE_CONNECTION: sync
       DB_CONNECTION: mysql
-      DB_HOST: mysql
+      DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_DATABASE: laracraft_test
+      DB_DATABASE: laracrafr_test
       DB_USERNAME: laravel
       DB_PASSWORD: secret
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
           tools: composer:v2
-          extensions: mbstring, bcmath, intl, pdo_mysql
+          extensions: mbstring, bcmath, ctype, fileinfo, json, tokenizer, xml, pdo, pdo_mysql, openssl, curl, zip, imagick, swoole
+          ini-values: memory_limit=-1
           coverage: none
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"
           cache: npm
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vendor
           key: ${{ runner.os }}-php-8.4-${{ hashFiles('**/composer.lock') }}
@@ -86,14 +91,14 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
+      - name: Generate Wayfinder types
+        run: php artisan wayfinder:generate --with-form --no-interaction
+
       - name: Run database migrations
         run: php artisan migrate --force
 
       - name: Check PHP code style (Pint)
         run: vendor/bin/pint --dirty
-
-      - name: Run PHP tests
-        run: php artisan test
 
       - name: Check frontend formatting
         run: npm run format:check
@@ -104,6 +109,9 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      - name: Run PHP tests
+        run: php artisan test
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -113,15 +121,17 @@ jobs:
       (github.ref_name == 'main' || github.ref_name == 'production')
 
     steps:
-      - name: Validate secrets
+      - name: Validate deploy secrets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ] || \
-             [ -z "${{ secrets.SSH_USERNAME }}" ] || \
-             [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ] || \
-             [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
-            echo "❌ Required secrets are missing"
-            exit 1
-          fi
+          test -n "$SSH_HOST" || { echo "Missing SSH_HOST secret"; exit 1; }
+          test -n "$SSH_USERNAME" || { echo "Missing SSH_USERNAME secret"; exit 1; }
+          test -n "$SSH_PRIVATE_KEY" || { echo "Missing SSH_PRIVATE_KEY secret"; exit 1; }
+          test -n "$DEPLOY_PATH" || { echo "Missing DEPLOY_PATH secret"; exit 1; }
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
@@ -140,5 +150,12 @@ jobs:
             php artisan migrate --force
             npm ci
             npm run build
+            mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
+            chmod -R ug+rwX storage bootstrap/cache
+            find storage bootstrap/cache -type d -exec chmod 775 {} \;
+            find storage bootstrap/cache -type f -exec chmod 664 {} \;
+            if [ -n "${{ secrets.WEB_USER }}" ] && [ -n "${{ secrets.WEB_GROUP }}" ]; then
+              sudo chown -R "${{ secrets.WEB_USER }}:${{ secrets.WEB_GROUP }}" storage bootstrap/cache || chown -R "${{ secrets.WEB_USER }}:${{ secrets.WEB_GROUP }}" storage bootstrap/cache || true
+            fi
             php artisan optimize:clear
             php artisan optimize
