@@ -41,6 +41,7 @@ class BatchController extends Controller
             'start_date' => ['required', 'date', ],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'TotalClass' => ['required', 'integer', 'min:1', 'max:500'],
+            'batch_status' => ['required', 'string', 'max:50'],
         ], [
             // Name
             'name.required' => 'Batch name is required.',
@@ -65,8 +66,9 @@ class BatchController extends Controller
             'TotalClass.integer' => 'Total class must be a whole number.',
             'TotalClass.min' => 'Total class must be at least 1.',
             'TotalClass.max' => 'Total class looks too large. Please double-check.',
+            // Batch Status
+            'batch_status.required' => 'Batch status is required.',
         ]);
-
 
         $batch = Batch::create($validated);
 
@@ -108,6 +110,7 @@ class BatchController extends Controller
             'start_date' => $data->start_date,
             'end_date' => $data->end_date,
             'TotalClass' => $data->TotalClass,
+            'batch_status' => $data->batch_status,
         ];
         return Inertia::render('batch/update', [
             'batch' => $batch,
@@ -127,6 +130,7 @@ class BatchController extends Controller
             'batch_code' => 'required | string',
             'end_date' => 'required|date|after_or_equal:start_date',
             'TotalClass' => 'required|integer|min:1',
+            'batch_status' => 'required|string|max:50',
         ]);
 
         $batch = Batch::findOrFail($id->id);

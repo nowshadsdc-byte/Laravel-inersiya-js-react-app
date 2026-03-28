@@ -89,7 +89,6 @@ export default function Register() {
                                     message={errors.password_confirmation}
                                 />
                             </div>
-                            
 
                             <Button
                                 type="submit"

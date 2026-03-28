@@ -1,4 +1,3 @@
-
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
@@ -14,9 +13,9 @@ export default function Index() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Billing Dashboard" />
-            <div className='m-6'>
-                <h1 className='text-2xl font-bold'>Billing Dashboard</h1>
-                <p className='mt-4'>Billing part will update soon</p>
+            <div className="m-6">
+                <h1 className="text-2xl font-bold">Billing Dashboard</h1>
+                <p className="mt-4">Billing part will update soon</p>
             </div>
         </AppLayout>
     );

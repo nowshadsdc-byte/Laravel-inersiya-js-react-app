@@ -1,4 +1,4 @@
-import { Course } from "@/types/Course";
+import { Course } from '@/types/Course';
 
 interface CourseTableProps {
     course: Course;
@@ -28,18 +28,17 @@ function renderValue(value: unknown) {
         return String(value);
     }
 
-
     // object (nested loop)
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         return (
-            <table className="w-full border border-gray-200 mt-2">
+            <table className="mt-2 w-full border border-gray-200">
                 <tbody>
                     {Object.entries(value).map(([k, v]) => (
                         <tr key={k}>
-                            <td className="px-3 py-1 border font-medium">
+                            <td className="border px-3 py-1 font-medium">
                                 {k.replace(/_/g, ' ')}
                             </td>
-                            <td className="px-3 py-1 border">
+                            <td className="border px-3 py-1">
                                 {renderValue(v)}
                             </td>
                         </tr>
@@ -60,7 +59,7 @@ export function CourseTable({ course }: CourseTableProps) {
             value !== null &&
             value !== undefined &&
             value !== '' &&
-            key !== 'batch'
+            key !== 'batch',
     );
 
     if (entries.length === 0) {
@@ -68,22 +67,22 @@ export function CourseTable({ course }: CourseTableProps) {
     }
 
     return (
-        <div className="m-2 bg-white rounded-xl shadow">
+        <div className="m-2 rounded-xl bg-white shadow">
             <table className="w-full border border-gray-200">
                 <thead>
                     <tr className="bg-gray-100 text-left">
-                        <th className="px-4 py-2 border">Key</th>
-                        <th className="px-4 py-2 border">Value</th>
+                        <th className="border px-4 py-2">Key</th>
+                        <th className="border px-4 py-2">Value</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {entries.map(([key, value]) => (
-                        <tr key={key} className="hover:bg-gray-50 align-top">
-                            <td className="px-4 py-2 border font-medium">
+                        <tr key={key} className="align-top hover:bg-gray-50">
+                            <td className="border px-4 py-2 font-medium">
                                 {key.replace(/_/g, ' ')}
                             </td>
-                            <td className="px-4 py-2 border">
+                            <td className="border px-4 py-2">
                                 {renderValue(value)}
                             </td>
                         </tr>

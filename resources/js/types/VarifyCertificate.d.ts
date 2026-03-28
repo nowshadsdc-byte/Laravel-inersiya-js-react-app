@@ -1,3 +1,3 @@
 export interface VarifyCertificate {
-  uid: string
+    uid: string;
 }

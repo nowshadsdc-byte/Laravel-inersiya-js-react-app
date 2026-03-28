@@ -6,7 +6,6 @@ import { edit as editAppearance } from '@/routes/appearance';
 import { edit } from '@/routes/profile';
 import { show } from '@/routes/two-factor';
 import { edit as editPassword } from '@/routes/user-password';
-import { upload } from '@/routes/user/profile-picture';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -31,8 +30,7 @@ const sidebarNavItems: NavItem[] = [
         title: 'Appearance',
         href: editAppearance(),
         icon: null,
-    }
-
+    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
@@ -49,7 +47,6 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 title="Settings"
                 description="Manage your profile and account settings"
             />
-
             <div className="flex flex-col lg:flex-row lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav className="flex flex-col space-y-1 space-x-0">

@@ -17,7 +17,16 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::latest()->get();
+        // $courses = Course::latest()->get();
+        $courses = Course::withCount('students')->get()->map(function ($course) {
+            return [
+                'id' => $course->id,
+                'name' => $course->name,
+                'course_code' => $course->course_code,
+                'description' => $course->description,
+                'students_count' => $course->students_count,
+            ];
+        });
         return Inertia::render('course/index', compact('courses'));
     }
 

@@ -20,6 +20,7 @@ class Batch extends Model
         'start_date',
         'end_date',
         'TotalClass',
+        'batch_status',
     ];
 
     public function course()

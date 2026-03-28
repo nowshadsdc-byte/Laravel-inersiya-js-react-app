@@ -5,6 +5,7 @@ use App\Http\Controllers\BatchController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FollowUpScheduledController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PdfController;
@@ -14,6 +15,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use \App\Http\Controllers\ProfilePictureController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use BaconQrCode\Renderer\Module\RoundnessModule;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 //public routes
@@ -50,28 +52,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Certificate Varificattion 
     Route::get('/certificate', [VarifyCertificate::class, 'index'])->middleware('throttle:10,1');
     Route::post('/certificate', [VarifyCertificate::class, 'show'])->middleware('throttle:10,1');
-    Route::get('/student/pdf', [PdfController::class, 'student'])->name('student.pdf')->withoutMiddleware([
-        HandleInertiaRequests::class,
-    ]);
+
+
+
     //Website settings routes
     Route::get('/userspermissions', [RoleController::class, 'index'])->name('users.permissions')->middleware('permission:view_roles');
-    Route::get('/role/create',[RoleController::class,'create'])->name('role.create')->middleware('permission:create_roles');
-    Route::post('/role/store',[RoleController::class,'store'])->name('role.store')->middleware('permission:create_roles');
-    Route::get('/role/edit/{id}',[RoleController::class,'edit'])->name('role.edit')->middleware('permission:edit_roles');
-    Route::put('/role/update/{id}',[RoleController::class,'update'])->name('role.update')->middleware('permission:edit_roles');
-    Route::delete('/role/delete/{id}',[RoleController::class,'destroy'])->name('role.delete')->middleware('permission:delete_roles');
+    Route::get('/role/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:create_roles');
+    Route::post('/role/store', [RoleController::class, 'store'])->name('role.store')->middleware('permission:create_roles');
+    Route::get('/role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit')->middleware('permission:edit_roles');
+    Route::put('/role/update/{id}', [RoleController::class, 'update'])->name('role.update')->middleware('permission:edit_roles');
+    Route::delete('/role/delete/{id}', [RoleController::class, 'destroy'])->name('role.delete')->middleware('permission:delete_roles');
     //Website user Routes
-    Route::get('/users',[UserController::class,'index'])->name('users.index')->middleware('permission:view_users');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:view_users');
 
-    Route::get('/users/create',[UserController::class,'create'])->name('users.create')->middleware('permission:create_users');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware('permission:create_users');
 
-    Route::post('/users/create',[UserController::class,'store'])->name('users.store')->middleware('permission:create_users');
+    Route::post('/users/create', [UserController::class, 'store'])->name('users.store')->middleware('permission:create_users');
 
-    Route::get('/users/edit/{id}',[UserController::class,'edit'])->name('users.edit')->middleware('permission:edit_users');
-    Route::put('/users/edit/{id}',[UserController::class,'update'])->name('users.update')->middleware('permission:edit_users');
-    Route::delete('/users/delete/{id}',[UserController::class,'destroy'])->name('users.delete')->middleware('permission:delete_users');
+    Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:edit_users');
+    Route::put('/users/edit/{id}', [UserController::class, 'update'])->name('users.update')->middleware('permission:edit_users');
+    Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete')->middleware('permission:delete_users');
     //Billing Routes
-    Route::get('/billings',[BillingController::class,'index'])->name('billings.index')->middleware('permission:view_billing');
+    Route::get('/billings', [BillingController::class, 'index'])->name('billings.index')->middleware('permission:view_billing');
 
     //Lead Routes
     Route::get('/leads', [LeadController::class, 'index'])->name('leads.index')->middleware('permission:view_leads');
@@ -81,11 +83,36 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/leads/import', [LeadController::class, 'import'])->name('leads.import')->middleware('permission:create_leads');
     Route::post('/leads/create', [LeadController::class, 'store'])->name('leads.store')->middleware('permission:create_leads');
     Route::get('/leads/edit/{id}', [LeadController::class, 'edit'])->name('leads.edit')->middleware('permission:edit_leads');
+
     Route::put('/leads/edit/{id}', [LeadController::class, 'update'])->name('leads.update')->middleware('permission:edit_leads');
+    
     Route::delete('/leads/delete/{id}', [LeadController::class, 'destroy'])->name('leads.delete')->middleware('permission:delete_leads');
     Route::get('/leads/call-center', [LeadController::class, 'callCenter'])->name('leads.call-center');
-    Route::post('/leads/call-center/{id}',[LeadController::class, 'callupdate'])->name('leads.callupdate');
+    Route::post('/leads/call-center/{id}', [LeadController::class, 'callupdate'])->name('leads.callupdate');
+    Route::get('/leads/call-now/{id}', [LeadController::class, 'callNow'])->name('leads.call-now');
+    Route::post('/leads/add-note/{id}', [LeadController::class, 'addNote'])->name('leads.add-note');
+    Route::put('/leads/update-status/{id}', [LeadController::class, 'updateStatus'])->name('leads.update-status');
+    Route::delete('/leads/delete-note/{id}', [LeadController::class, 'deleteNote'])->name('leads.delete-note');
 
+    Route::post('/leads/add-reminder/{id}', [LeadController::class, 'addReminder'])->name('leads.add-reminder');
+
+    //Lead Redminder update route
+    Route::post('/leads/update-reminder/', [LeadController::class, 'updateReminder'])->name('leads.update-reminder');
+
+    //FollowUpScheduled Route 
+
+    Route::get('/lead/FollowUp',[FollowUpScheduledController::class,'index'])->name('lead.FollowUpScheduled');
+
+    //Lead add call Now
+    Route::post('/leads/add-call-log/{id}', [LeadController::class, 'addCallLog'])->name('leads.add-call-now');
+
+    //PDF Generation Route
+    Route::get('/student/pdf', [PdfController::class, 'student'])->name('student.pdf')->withoutMiddleware([
+        HandleInertiaRequests::class,
+    ]);
+    Route::get('/student/pdf/{id}', [PdfController::class, 'studentProfile'])->name('student.profile.pdf')->withoutMiddleware([
+        HandleInertiaRequests::class,
+    ]);
 });
 
 require __DIR__ . '/settings.php';

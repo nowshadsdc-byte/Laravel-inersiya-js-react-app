@@ -45,7 +45,12 @@ interface Props {
     student_course_ids: number[];
 }
 
-export default function StudentEdit({ student, batches, courses, student_course_ids }: Props) {
+export default function StudentEdit({
+    student,
+    batches,
+    courses,
+    student_course_ids,
+}: Props) {
     const { data, setData, put, errors } = useForm<Student>({
         id: student.id,
         name: student.name,
@@ -74,53 +79,82 @@ export default function StudentEdit({ student, batches, courses, student_course_
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Update Student" />
-            <div className="m-6 p-6 max-w-4xl">
-                <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="m-6 max-w-4xl p-6">
+                <form
+                    onSubmit={submit}
+                    className="grid grid-cols-1 gap-6 md:grid-cols-2"
+                >
                     {/* Left Column */}
                     <div className="flex flex-col gap-4">
                         <div>
                             <Label>Name</Label>
                             <Input
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
                             />
-                            {errors.name && <p className="text-red-500">{errors.name}</p>}
+                            {errors.name && (
+                                <p className="text-red-500">{errors.name}</p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Father Name</Label>
                             <Input
                                 value={data.father_name}
-                                onChange={(e) => setData('father_name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('father_name', e.target.value)
+                                }
                             />
-                            {errors.father_name && <p className="text-red-500">{errors.father_name}</p>}
+                            {errors.father_name && (
+                                <p className="text-red-500">
+                                    {errors.father_name}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Mother Name</Label>
                             <Input
                                 value={data.mother_name}
-                                onChange={(e) => setData('mother_name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('mother_name', e.target.value)
+                                }
                             />
-                            {errors.mother_name && <p className="text-red-500">{errors.mother_name}</p>}
+                            {errors.mother_name && (
+                                <p className="text-red-500">
+                                    {errors.mother_name}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Student UID</Label>
                             <Input
                                 value={data.student_uid || ''}
-                                onChange={(e) => setData('student_uid', e.target.value)}
+                                onChange={(e) =>
+                                    setData('student_uid', e.target.value)
+                                }
                             />
-                            {errors.student_uid && <p className="text-red-500">{errors.student_uid}</p>}
+                            {errors.student_uid && (
+                                <p className="text-red-500">
+                                    {errors.student_uid}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Phone</Label>
                             <Input
                                 value={data.phone || ''}
-                                onChange={(e) => setData('phone', e.target.value)}
+                                onChange={(e) =>
+                                    setData('phone', e.target.value)
+                                }
                             />
-                            {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+                            {errors.phone && (
+                                <p className="text-red-500">{errors.phone}</p>
+                            )}
                         </div>
 
                         <div>
@@ -128,38 +162,56 @@ export default function StudentEdit({ student, batches, courses, student_course_
                             <Input
                                 type="email"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
                             />
-                            {errors.email && <p className="text-red-500">{errors.email}</p>}
+                            {errors.email && (
+                                <p className="text-red-500">{errors.email}</p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Photo</Label>
 
-                            {student.photo && typeof student.photo === 'string' && (
-                                <img
-                                    src={`/storage/${student.photo}`}
-                                    alt="Student Photo"
-                                    className="w-32 h-32 object-cover rounded mb-2 border"
-                                />
-                            )}
+                            {student.photo &&
+                                typeof student.photo === 'string' && (
+                                    <img
+                                        src={`/storage/${student.photo}`}
+                                        alt="Student Photo"
+                                        className="mb-2 h-32 w-32 rounded border object-cover"
+                                    />
+                                )}
                             <Input
                                 type="file"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    if (e.target.files?.[0]) setData('photo', e.target.files?.[0] || student.photo);
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                    if (e.target.files?.[0])
+                                        setData(
+                                            'photo',
+                                            e.target.files?.[0] ||
+                                                student.photo,
+                                        );
                                 }}
                             />
-                            {errors.photo && <p className="text-red-500">{errors.photo}</p>}
+                            {errors.photo && (
+                                <p className="text-red-500">{errors.photo}</p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Address</Label>
                             <textarea
                                 value={data.address || ''}
-                                onChange={(e) => setData('address', e.target.value)}
-                                className="border p-2 w-full rounded"
+                                onChange={(e) =>
+                                    setData('address', e.target.value)
+                                }
+                                className="w-full rounded border p-2"
                             />
-                            {errors.address && <p className="text-red-500">{errors.address}</p>}
+                            {errors.address && (
+                                <p className="text-red-500">{errors.address}</p>
+                            )}
                         </div>
                     </div>
 
@@ -169,75 +221,120 @@ export default function StudentEdit({ student, batches, courses, student_course_
                             <Label>Guardian Name</Label>
                             <Input
                                 value={data.guardian_name || ''}
-                                onChange={(e) => setData('guardian_name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('guardian_name', e.target.value)
+                                }
                             />
-                            {errors.guardian_name && <p className="text-red-500">{errors.guardian_name}</p>}
+                            {errors.guardian_name && (
+                                <p className="text-red-500">
+                                    {errors.guardian_name}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Guardian Phone </Label>
                             <Input
                                 value={data.guardian_phone || ''}
-                                onChange={(e) => setData('guardian_phone', e.target.value)}
+                                onChange={(e) =>
+                                    setData('guardian_phone', e.target.value)
+                                }
                             />
-                            {errors.guardian_phone && <p className="text-red-500">{errors.guardian_phone}</p>}
+                            {errors.guardian_phone && (
+                                <p className="text-red-500">
+                                    {errors.guardian_phone}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Guardian Relation</Label>
                             <Input
                                 value={data.guardian_relation || ''}
-                                onChange={(e) => setData('guardian_relation', e.target.value)}
+                                onChange={(e) =>
+                                    setData('guardian_relation', e.target.value)
+                                }
                             />
-                            {errors.guardian_relation && <p className="text-red-500">{errors.guardian_relation}</p>}
+                            {errors.guardian_relation && (
+                                <p className="text-red-500">
+                                    {errors.guardian_relation}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Status</Label>
                             <select
                                 value={data.status}
-                                onChange={(e) => setData('status', e.target.value as 'active' | 'inactive')}
-                                className="border p-2 rounded w-full"
+                                onChange={(e) =>
+                                    setData(
+                                        'status',
+                                        e.target.value as 'active' | 'inactive',
+                                    )
+                                }
+                                className="w-full rounded border p-2"
                             >
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
-                            {errors.status && <p className="text-red-500">{errors.status}</p>}
+                            {errors.status && (
+                                <p className="text-red-500">{errors.status}</p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Batch</Label>
                             <select
                                 value={data.batch_id || ''}
-                                onChange={(e) => setData('batch_id', e.target.value)}
-                                className="border p-2 rounded w-full"
+                                onChange={(e) =>
+                                    setData('batch_id', e.target.value)
+                                }
+                                className="w-full rounded border p-2"
                             >
                                 <option value="">Select The Batch</option>
                                 {batches.map((batch) => (
-                                    <option key={batch.id} value={batch.id}>{batch.name}</option>
+                                    <option key={batch.id} value={batch.id}>
+                                        {batch.name}
+                                    </option>
                                 ))}
                             </select>
-                            {errors.batch_id && <p className="text-red-500">{errors.batch_id}</p>}
+                            {errors.batch_id && (
+                                <p className="text-red-500">
+                                    {errors.batch_id}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Courses</Label>
-                            <div className="flex flex-col gap-2 border p-2 rounded max-h-64 overflow-y-auto">
+                            <div className="flex max-h-64 flex-col gap-2 overflow-y-auto rounded border p-2">
                                 {courses.map((course) => {
                                     const courseId = Number(course.id);
                                     return (
-                                        <label key={course.id} className="flex items-center gap-2">
+                                        <label
+                                            key={course.id}
+                                            className="flex items-center gap-2"
+                                        >
                                             <input
                                                 type="checkbox"
                                                 value={course.id}
-                                                checked={data.course_ids.includes(courseId)}
+                                                checked={data.course_ids.includes(
+                                                    courseId,
+                                                )}
                                                 onChange={(e) => {
                                                     if (e.target.checked) {
-                                                        setData('course_ids', [...data.course_ids, courseId]);
+                                                        setData('course_ids', [
+                                                            ...data.course_ids,
+                                                            courseId,
+                                                        ]);
                                                     } else {
                                                         setData(
                                                             'course_ids',
-                                                            data.course_ids.filter((id) => id !== courseId)
+                                                            data.course_ids.filter(
+                                                                (id) =>
+                                                                    id !==
+                                                                    courseId,
+                                                            ),
                                                         );
                                                     }
                                                 }}
@@ -247,11 +344,17 @@ export default function StudentEdit({ student, batches, courses, student_course_
                                     );
                                 })}
                             </div>
-                            {errors.course_ids && <p className="text-red-500">{errors.course_ids}</p>}
+                            {errors.course_ids && (
+                                <p className="text-red-500">
+                                    {errors.course_ids}
+                                </p>
+                            )}
                         </div>
 
                         <div className="mt-4">
-                            <Button type="submit" className="w-full">Update Student</Button>
+                            <Button type="submit" className="w-full">
+                                Update Student
+                            </Button>
                         </div>
                     </div>
                 </form>

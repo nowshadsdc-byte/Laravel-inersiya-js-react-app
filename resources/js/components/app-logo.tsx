@@ -1,6 +1,5 @@
-import AppLogoIcon from './app-logo-icon';
 import { usePage } from '@inertiajs/react';
-
+import AppLogoIcon from './app-logo-icon';
 
 export default function AppLogo() {
     const { name } = usePage().props as unknown as { name: string };
@@ -14,7 +13,7 @@ export default function AppLogo() {
                 <span className="mb-0.5 truncate leading-tight font-semibold">
                     {name}
                 </span>
-                <span className="text-xs font-medium text-sidebar-secondary-foreground truncate leading-tight">
+                <span className="text-sidebar-secondary-foreground truncate text-xs leading-tight font-medium">
                     Admin Panel
                 </span>
             </div>

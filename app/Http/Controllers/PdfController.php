@@ -29,4 +29,19 @@ class PdfController extends Controller
         
 
     }
+    public function studentProfile($id)
+    {
+        $studentData = Student::with(['batch', 'courses'])->findOrFail($id);
+        $pdf = Pdf::loadView('pdf.profile', [
+            'student' => $studentData,
+        ])->setPaper('a4', 'portrait');
+
+        return response()->streamDownload(
+            fn() => print($pdf->output()),
+            'student_profile.pdf',
+            [
+                'Content-Type' => 'application/pdf',
+            ]
+        );
+    }
 }

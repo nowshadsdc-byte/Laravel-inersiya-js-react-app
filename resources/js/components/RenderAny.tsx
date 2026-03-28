@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 // Refined Type to be more TypeScript friendly
 type JSONValue =
     | string
@@ -18,23 +17,39 @@ interface RenderAnyProps {
 const RenderAny: React.FC<RenderAnyProps> = ({ data }) => {
     // 1. Blacklist
     const blacklistedKeys = [
-        "errors", "Field", "Value", "quote", "flash", "auth",
-        "sidebarOpen", "pivot", "id", "batch_id", "course_id"
+        'errors',
+        'Field',
+        'Value',
+        'quote',
+        'flash',
+        'auth',
+        'sidebarOpen',
+        'pivot',
+        'id',
+        'batch_id',
+        'course_id',
     ];
 
     // 2. Helper to format dates
     const formatDate = (key: string, value: any): string => {
         if (typeof value !== 'string') return String(value);
-        const isDateKey = key.toLowerCase().includes('at') || key.toLowerCase().includes('date');
+        const isDateKey =
+            key.toLowerCase().includes('at') ||
+            key.toLowerCase().includes('date');
         const isISOString = /^\d{4}-\d{2}-\d{2}/.test(value);
 
         if (isDateKey && isISOString) {
             try {
                 return new Date(value).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
                 });
-            } catch { return value; }
+            } catch {
+                return value;
+            }
         }
         return value;
     };
@@ -50,10 +65,13 @@ const RenderAny: React.FC<RenderAnyProps> = ({ data }) => {
     // 4. Handle Arrays (e.g. Courses)
     if (Array.isArray(data)) {
         return (
-            <div className="space-y-4 w-full mt-2">
+            <div className="mt-2 w-full space-y-4">
                 {data.map((item, index) => (
-                    <div key={index} className="border-l-4 border-indigo-600 bg-white shadow-sm rounded-r-lg overflow-hidden">
-                        <div className="px-4 py-1 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest">
+                    <div
+                        key={index}
+                        className="overflow-hidden rounded-r-lg border-l-4 border-indigo-600 bg-white shadow-sm"
+                    >
+                        <div className="bg-indigo-600 px-4 py-1 text-[10px] font-bold tracking-widest text-white uppercase">
                             Item {index + 1}
                         </div>
                         {/* Recursive call */}
@@ -70,38 +88,47 @@ const RenderAny: React.FC<RenderAnyProps> = ({ data }) => {
             ? (data as Record<string, JSONValue>).studentData
             : data;
 
-        const entries = Object.entries(sourceData as Record<string, JSONValue>)
-            .filter(([key]) => !blacklistedKeys.includes(key));
+        const entries = Object.entries(
+            sourceData as Record<string, JSONValue>,
+        ).filter(([key]) => !blacklistedKeys.includes(key));
 
         return (
-            <div className="w-full overflow-hidden border border-gray-200 rounded-lg bg-white shadow-sm">
+            <div className="w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 <table className="min-w-full table-auto text-sm">
                     <tbody className="divide-y divide-gray-100">
                         {entries.map(([key, value]) => {
-                            const isNested = value !== null && typeof value === 'object';
+                            const isNested =
+                                value !== null && typeof value === 'object';
                             const isNameField = key.toLowerCase() === 'name';
 
                             return (
-                                <tr key={key} className="group hover:bg-blue-50/20 transition-colors">
-                                    <td className="px-4 py-3 font-bold text-gray-700 border-r bg-gray-50/50 w-48 capitalize">
+                                <tr
+                                    key={key}
+                                    className="group transition-colors hover:bg-blue-50/20"
+                                >
+                                    <td className="w-48 border-r bg-gray-50/50 px-4 py-3 font-bold text-gray-700 capitalize">
                                         {key.replace(/_/g, ' ')}
                                     </td>
                                     <td className="px-4 py-3">
                                         {isNested ? (
-                                            <div className="p-2 border-l-4 border-emerald-500 bg-emerald-50/30 rounded-r-md">
-                                                <div className="text-[10px] font-bold text-emerald-700 uppercase mb-2">
+                                            <div className="rounded-r-md border-l-4 border-emerald-500 bg-emerald-50/30 p-2">
+                                                <div className="mb-2 text-[10px] font-bold text-emerald-700 uppercase">
                                                     {key} Details
                                                 </div>
-                                                <RenderAny data={value as JSONValue} />
+                                                <RenderAny
+                                                    data={value as JSONValue}
+                                                />
                                             </div>
                                         ) : isImageUrl(value) ? (
                                             <img
                                                 src={`/storage/${value as string}`}
                                                 alt={key}
-                                                className="h-20 w-20 object-cover rounded-md border"
+                                                className="h-20 w-20 rounded-md border object-cover"
                                             />
                                         ) : (
-                                            <span className={`break-all ${isNameField ? "text-blue-700 font-extrabold text-lg" : "text-gray-600 font-medium"}`}>
+                                            <span
+                                                className={`break-all ${isNameField ? 'text-lg font-extrabold text-blue-700' : 'font-medium text-gray-600'}`}
+                                            >
                                                 {formatDate(key, value)}
                                             </span>
                                         )}

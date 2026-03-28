@@ -1,31 +1,31 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { router } from "@inertiajs/react"
-import { Button } from "@/components/ui/button"
-import { Eye, Pencil, Trash2 } from "lucide-react"
-import { Role } from "@/types"
+import { Button } from '@/components/ui/button';
+import { Role } from '@/types';
+import { router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 export const rolescolum: ColumnDef<Role>[] = [
     {
-        id: "id",
-        accessorKey: "id",
-        header: "ID",
+        id: 'id',
+        accessorKey: 'id',
+        header: 'ID',
     },
     {
-        accessorKey: "name",
-        header: "Role Name",
+        accessorKey: 'name',
+        header: 'Role Name',
     },
     {
-        accessorKey: "guard_name",
-        header: "Guard Name",
+        accessorKey: 'guard_name',
+        header: 'Guard Name',
     },
     {
-        accessorKey: "permissions",
-        header: "permissions",
+        accessorKey: 'permissions',
+        header: 'permissions',
     },
     {
-        id: "actions",
-        header: "Actions",
+        id: 'actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            const role = row.original
+            const role = row.original;
             return (
                 <div className="flex gap-2">
                     {/* View Batch */}
@@ -49,15 +49,19 @@ export const rolescolum: ColumnDef<Role>[] = [
                         size="icon"
                         variant="destructive"
                         onClick={() => {
-                            if (confirm("Are you sure you want to delete this batch?")) {
-                                router.delete(`/role/delete/${role.id}`)
+                            if (
+                                confirm(
+                                    'Are you sure you want to delete this batch?',
+                                )
+                            ) {
+                                router.delete(`/role/delete/${role.id}`);
                             }
                         }}
                     >
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
-            )
+            );
         },
     },
-]
+];

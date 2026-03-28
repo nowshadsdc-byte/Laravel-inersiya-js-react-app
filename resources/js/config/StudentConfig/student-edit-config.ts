@@ -1,12 +1,12 @@
 export const studetnEditConfig = {
-    ButtonLabel: "Edit ",
-    title: "Add New Student",
-    description: "Add new Student",
+    ButtonLabel: 'Edit ',
+    title: 'Add New Student',
+    description: 'Add new Student',
     Button: {
-        id: "add-new-student-button",
-        variant: "outline",
-        text: "Edit",
-        className: "",
+        id: 'add-new-student-button',
+        variant: 'outline',
+        text: 'Edit',
+        className: '',
     },
     Fields: [
         {
@@ -18,7 +18,7 @@ export const studetnEditConfig = {
             placeholder: 'Student Name',
             autocomplete: 'name',
             tabIndex: 1,
-            autoFocus: true
+            autoFocus: true,
         },
         {
             id: 'student-email',
@@ -29,8 +29,8 @@ export const studetnEditConfig = {
             placeholder: 'Student email',
             autocomplete: 'email',
             tabIndex: 2,
-            autoFocus: false
-        }
+            autoFocus: false,
+        },
     ],
     studentFields: [
         {
@@ -42,7 +42,7 @@ export const studetnEditConfig = {
             placeholder: 'Student Name',
             autocomplete: 'name',
             tabIndex: 1,
-            autoFocus: true
+            autoFocus: true,
         },
         {
             id: 'student-father-name',
@@ -53,7 +53,7 @@ export const studetnEditConfig = {
             placeholder: 'Father Name',
             autocomplete: 'father-name',
             tabIndex: 2,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-mother-name',
@@ -64,7 +64,7 @@ export const studetnEditConfig = {
             placeholder: 'Mother Name',
             autocomplete: 'mother-name',
             tabIndex: 3,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-uid',
@@ -75,7 +75,7 @@ export const studetnEditConfig = {
             placeholder: 'Student UID',
             autocomplete: 'student-uid',
             tabIndex: 4,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-phone',
@@ -86,7 +86,7 @@ export const studetnEditConfig = {
             placeholder: 'Phone Number',
             autocomplete: 'tel',
             tabIndex: 5,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-email',
@@ -97,7 +97,7 @@ export const studetnEditConfig = {
             placeholder: 'Student Email',
             autocomplete: 'email',
             tabIndex: 6,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-photo',
@@ -108,7 +108,7 @@ export const studetnEditConfig = {
             placeholder: 'Upload Photo',
             autocomplete: 'off',
             tabIndex: 7,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-address',
@@ -119,7 +119,7 @@ export const studetnEditConfig = {
             placeholder: 'Student Address',
             autocomplete: 'street-address',
             tabIndex: 8,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'guardian-name',
@@ -130,7 +130,7 @@ export const studetnEditConfig = {
             placeholder: 'Guardian Name',
             autocomplete: 'off',
             tabIndex: 9,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'guardian-phone',
@@ -141,7 +141,7 @@ export const studetnEditConfig = {
             placeholder: 'Guardian Phone',
             autocomplete: 'tel',
             tabIndex: 10,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'guardian-relation',
@@ -152,7 +152,7 @@ export const studetnEditConfig = {
             placeholder: 'Relation with Guardian',
             autocomplete: 'off',
             tabIndex: 11,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-status',
@@ -163,10 +163,10 @@ export const studetnEditConfig = {
             placeholder: 'Select Status',
             options: [
                 { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' }
+                { value: 'inactive', label: 'Inactive' },
             ],
             tabIndex: 12,
-            autoFocus: false
+            autoFocus: false,
         },
         {
             id: 'student-batch',
@@ -177,9 +177,7 @@ export const studetnEditConfig = {
             placeholder: 'Select Batch',
             options: [], // You can dynamically populate this from batches
             tabIndex: 13,
-            autoFocus: false
-        }
-    ]
-
-
-}
+            autoFocus: false,
+        },
+    ],
+};

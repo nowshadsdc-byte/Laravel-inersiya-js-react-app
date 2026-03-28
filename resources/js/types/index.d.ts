@@ -20,7 +20,7 @@ export interface NavItem {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
     isActive?: boolean;
-    permission?: string; 
+    permission?: string;
 }
 
 export interface SharedData {
@@ -30,8 +30,8 @@ export interface SharedData {
     sidebarOpen: boolean;
     [key: string]: unknown;
 }
-export interface uploadProfile{
-    name:string
+export interface uploadProfile {
+    name: string;
 }
 export interface User {
     id: number;
@@ -46,28 +46,27 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Role{
+export interface Role {
     id: number;
     name: string;
     guard_name: string;
     created_at: string;
     updated_at: string;
-     permissions?: Permission[];
-
+    permissions?: Permission[];
 }
-export interface Permission{
+export interface Permission {
     id: number;
     name: string;
     guard_name: string;
     created_at: string;
     updated_at: string;
 }
-export interface AssignRole{
+export interface AssignRole {
     roles: Role[];
     user_roles: string[];
 }
 
-export interface AssignPermission{
+export interface AssignPermission {
     permissions: Permission[];
     role_permissions: string[];
 }

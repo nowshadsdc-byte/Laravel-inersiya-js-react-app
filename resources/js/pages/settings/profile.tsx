@@ -68,10 +68,9 @@ export default function Profile({
                                         message={errors.name}
                                     />
                                 </div>
-
+                                
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email address</Label>
-
                                     <Input
                                         id="email"
                                         type="email"

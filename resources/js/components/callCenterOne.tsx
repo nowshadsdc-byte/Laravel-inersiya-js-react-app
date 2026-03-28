@@ -1,10 +1,10 @@
-import { useMemo, useState, useEffect } from "react";
-import { router, usePage } from "@inertiajs/react";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
-import { LeadViewDialog } from "./LeadViewDialog";
-import { CallNow } from "./CallNow";
+import { router, usePage } from '@inertiajs/react';
+import { useEffect, useMemo, useState } from 'react';
+import { CallNow } from './CallNow';
+import { LeadViewDialog } from './LeadViewDialog';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Input } from './ui/input';
 
 type Source = {
     id: number | string;
@@ -24,30 +24,37 @@ interface CallCenterOneProps {
     total: number;
 }
 
-export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) {
+export function CallCenterOne({
+    leadList,
+    sources,
+    total,
+}: CallCenterOneProps) {
     const data = leadList;
 
-    //dailog 
+    //dailog
 
-    const [open, setOpen] = useState(false)
-    const [selectedLead, setSelectedLead] = useState<any>(null)
+    const [open, setOpen] = useState(false);
+    const [selectedLead, setSelectedLead] = useState<any>(null);
 
     //callNow
-    const [callOpen,setCallOpen] =useState(false)
-    const [selectCall , setCallNow] =useState<Lead | null>(null)
-
+    const [callOpen, setCallOpen] = useState(false);
+    const [selectCall, setCallNow] = useState<Lead | null>(null);
 
     // Inertia pagination data
-    const { props } = usePage<{ leads?: { current_page?: number; last_page?: number } }>();
+    const { props } = usePage<{
+        leads?: { current_page?: number; last_page?: number };
+    }>();
 
-    const pagination = props.leads as { current_page?: number; last_page?: number } | undefined;
+    const pagination = props.leads as
+        | { current_page?: number; last_page?: number }
+        | undefined;
 
     const currentPage = pagination?.current_page || 1;
     const totalPages = pagination?.last_page || 1;
 
     // Filters
-    const [search, setSearch] = useState("");
-    const [selectedSource, setSelectedSource] = useState("all");
+    const [search, setSearch] = useState('');
+    const [selectedSource, setSelectedSource] = useState('all');
 
     // Filtered data (frontend)
     const filteredLeads = useMemo(() => {
@@ -57,8 +64,7 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
                 .includes(search.toLowerCase());
 
             const matchSource =
-                selectedSource === "all" ||
-                lead.source.name === selectedSource;
+                selectedSource === 'all' || lead.source.name === selectedSource;
 
             return matchSearch && matchSource;
         });
@@ -67,16 +73,16 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
     // Pagination navigation
     const goToPage = (page: number) => {
         router.get(
-            "/leads/call-center",
+            '/leads/call-center',
             {
                 page,
                 search,
-                source: selectedSource !== "all" ? selectedSource : null,
+                source: selectedSource !== 'all' ? selectedSource : null,
             },
             {
                 preserveState: true,
                 preserveScroll: true,
-            }
+            },
         );
     };
     useEffect(() => {
@@ -88,16 +94,22 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
         return Array.from({ length: totalPages }, (_, i) => i + 1);
     }, [totalPages]);
 
+         
+
     return (
-        <div className="h-[150vh] ">
+        <div className="h-[150vh]">
             <LeadViewDialog
                 open={open}
                 onOpenChange={setOpen}
                 lead={selectedLead}
             />
 
-            <CallNow open={callOpen} onOpenChange={setCallOpen} lead={selectCall}/>
-            <Card className="h-[150vh] flex flex-col">
+            <CallNow
+                open={callOpen}
+                onOpenChange={setCallOpen}
+                lead={selectCall}
+            />
+            <Card className="flex h-[150vh] flex-col">
                 {/* Header */}
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -115,7 +127,7 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
                         />
 
                         <select
-                            className="w-full border rounded-md p-2"
+                            className="w-full rounded-md border p-2"
                             value={selectedSource}
                             onChange={(e) => setSelectedSource(e.target.value)}
                         >
@@ -130,7 +142,7 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
                 </CardHeader>
 
                 {/* Lead List */}
-                <CardContent className="flex-1 overflow-y-auto space-y-1">
+                <CardContent className="flex-1 space-y-1 overflow-y-auto">
                     {filteredLeads.map((lead) => (
                         <div
                             key={lead.id}
@@ -140,35 +152,42 @@ export function CallCenterOne({ leadList, sources, total }: CallCenterOneProps) 
                                 <span className="text-sm">{lead.name}</span>
                                 <span className="text-sm">{lead.phone}</span>
                             </div>
-                           <div className="">
-                             <Button className="mx-2" size="sm" variant="outline" onClick={() => {
-                                setSelectedLead(lead)
-                                setOpen(true)
-                            }}>
-                                View
-                            </Button>
-                             <Button size="sm" variant="outline" onClick={() => {
-                                setCallNow(lead)
-                                setCallOpen(true)
-                            }}>
-                                Call Now
-                            </Button>
-                           </div>
+                            <div className="">
+                                <Button
+                                    className="mx-2"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setSelectedLead(lead);
+                                        setOpen(true);
+                                    }}
+                                >
+                                    View
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setCallNow(lead);
+                                        setCallOpen(true);
+                                    }}
+                                >
+                                    Call Now
+                                </Button>
+                            </div>
                         </div>
                     ))}
                 </CardContent>
 
                 {/* Pagination */}
-                <div className="border-t px-6 py-3 flex items-center justify-between">
-                    <div className="flex gap-2 flex-wrap">
+                <div className="flex items-center justify-between border-t px-6 py-3">
+                    <div className="flex flex-wrap gap-2">
                         {pages.map((page) => (
                             <Button
                                 key={page}
                                 size="sm"
                                 variant={
-                                    page === currentPage
-                                        ? "default"
-                                        : "outline"
+                                    page === currentPage ? 'default' : 'outline'
                                 }
                                 onClick={() => goToPage(page)}
                             >

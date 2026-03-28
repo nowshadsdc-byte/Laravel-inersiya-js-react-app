@@ -1,43 +1,43 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { router } from "@inertiajs/react"
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 ,Eye} from "lucide-react"
-import { Student } from "@/types/Students"
+import { Button } from '@/components/ui/button';
+import { Student } from '@/types/Students';
+import { router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 
 export const columns: ColumnDef<Student>[] = [
     {
-        accessorKey: "id",
-        header: "ID",
+        accessorKey: 'id',
+        header: 'ID',
     },
     {
-        accessorKey: "name",
-        header: "Student Name",
+        accessorKey: 'name',
+        header: 'Student Name',
     },
     {
-        accessorKey: "email",
-        header: "Email",
-    },{
-        accessorKey:"student_uid",
-        header:"student_uid"
-    }
-    ,
-    {
-        accessorKey: "batch_id",
-        header: "Batch Name",
-        cell: ({ row }) => row.original.batch?.name ?? "—",
+        accessorKey: 'email',
+        header: 'Email',
     },
     {
-        header: "Courses",
+        accessorKey: 'student_uid',
+        header: 'student_uid',
+    },
+    {
+        accessorKey: 'batch_id',
+        header: 'Batch Name',
+        cell: ({ row }) => row.original.batch?.name ?? '—',
+    },
+    {
+        header: 'Courses',
         cell: ({ row }) => {
-            const courses = row.original.courses
+            const courses = row.original.courses;
 
             if (!courses || courses.length === 0) {
-                return <span className="text-muted-foreground">No Course</span>
+                return <span className="text-muted-foreground">No Course</span>;
             }
 
             return (
                 <div className="flex flex-wrap gap-1">
-                    {courses.map(course => (
+                    {courses.map((course) => (
                         <span
                             key={course.id}
                             className="rounded bg-slate-100 px-2 py-1 text-xs"
@@ -46,14 +46,14 @@ export const columns: ColumnDef<Student>[] = [
                         </span>
                     ))}
                 </div>
-            )
+            );
         },
     },
     {
-        id: "actions",
-        header: "Actions",
+        id: 'actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            const student = row.original
+            const student = row.original;
 
             return (
                 <div className="flex gap-2">
@@ -61,7 +61,9 @@ export const columns: ColumnDef<Student>[] = [
                     <Button
                         size="icon"
                         variant="outline"
-                        onClick={() => router.get(`/student/profile/${student.id}`)}
+                        onClick={() =>
+                            router.get(`/student/profile/${student.id}`)
+                        }
                     >
                         <Eye className="h-4 w-4" />
                     </Button>
@@ -69,7 +71,9 @@ export const columns: ColumnDef<Student>[] = [
                     <Button
                         size="icon"
                         variant="outline"
-                        onClick={() => router.get(`/student/edit/${student.id}`)}
+                        onClick={() =>
+                            router.get(`/student/edit/${student.id}`)
+                        }
                     >
                         <Pencil className="h-4 w-4" />
                     </Button>
@@ -79,15 +83,19 @@ export const columns: ColumnDef<Student>[] = [
                         size="icon"
                         variant="destructive"
                         onClick={() => {
-                            if (confirm("Are you sure you want to delete this student?")) {
-                                router.delete(`/student/${student.id}`)
+                            if (
+                                confirm(
+                                    'Are you sure you want to delete this student?',
+                                )
+                            ) {
+                                router.delete(`/student/${student.id}`);
                             }
                         }}
                     >
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
-            )
+            );
         },
     },
-]
+];

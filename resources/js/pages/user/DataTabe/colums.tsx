@@ -1,43 +1,46 @@
-import { ColumnDef } from "@tanstack/react-table"
-import { router } from "@inertiajs/react"
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
-import { User } from "@/types"
+import { Button } from '@/components/ui/button';
+import { User } from '@/types';
+import { router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Pencil, Trash2 } from 'lucide-react';
 
 export const columns: ColumnDef<User>[] = [
     {
-        accessorKey: "id",
-        header: "ID",
+        accessorKey: 'id',
+        header: 'ID',
     },
     {
-        accessorKey: "name",
-        header: "User Name",
+        accessorKey: 'name',
+        header: 'User Name',
     },
     {
-        accessorKey: "email",
-        header: "Email",
+        accessorKey: 'email',
+        header: 'Email',
     },
     {
-        accessorKey: "roles",
-        header: "Roles",
+        accessorKey: 'roles',
+        header: 'Roles',
         cell: ({ row }) => {
-            const users = row.original
+            const users = row.original;
             return (
                 <div>
                     {users.roles?.map((role) => (
-                        <span key={role.id} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 rounded-full mr-1">
+                        <span
+                            key={role.id}
+                            className="mr-1 inline-block rounded-full bg-blue-100 px-2 text-xs text-blue-800"
+                        >
                             {role.name}
                         </span>
                     ))}
                 </div>
-            )
-        }
+            );
+        },
     },
     {
-        id: "actions",
-        header: "Actions",
+        id: 'actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            const users = row.original
+            const users = row.original;
 
             return (
                 <div className="flex gap-2">
@@ -45,24 +48,28 @@ export const columns: ColumnDef<User>[] = [
                         size="icon"
                         variant="outline"
                         onClick={() => {
-                                router.get(`/users/edit/${users.id}`)
+                            router.get(`/users/edit/${users.id}`);
                         }}
                     >
                         <Pencil className="h-4 w-4" />
-                    </Button>                  
+                    </Button>
                     <Button
                         size="icon"
                         variant="destructive"
                         onClick={() => {
-                            if (confirm("Are you sure you want to delete this student?")) {
-                                router.delete(`/user/delete/${users.id}`)
+                            if (
+                                confirm(
+                                    'Are you sure you want to delete this student?',
+                                )
+                            ) {
+                                router.delete(`/user/delete/${users.id}`);
                             }
                         }}
                     >
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
-            )
+            );
         },
     },
-]
+];
